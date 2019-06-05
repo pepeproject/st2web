@@ -4528,10 +4528,10 @@ follow-redirects@^1.3.0:
   dependencies:
     debug "^3.2.6"
 
-fontello-update@0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/fontello-update/-/fontello-update-0.6.3.tgz#f75b088460ad3a41901f84cc559391e4f3cc5130"
-  integrity sha1-91sIhGCtOkGQH4TMVZOR5PPMUTA=
+fontello-update@0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/fontello-update/-/fontello-update-0.6.4.tgz#a690e68ab2eb2d728deb9e89e896057b5fc41123"
+  integrity sha512-NFJMPHJQALLl56vd+/F68hIzIA8vrDpIFG17s0NAcJLtJKoTxSVEiK/cM7n+9SmWNhDPRm4eNFnIBD6TUKzqRA==
   dependencies:
     adm-zip "^0.4.7"
     form-data "^1.0.0-rc3"
