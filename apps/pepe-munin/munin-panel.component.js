@@ -258,12 +258,12 @@ export default class MuninPanel extends React.Component {
             />
           </Toolbar>
           <Content>
-            { groups && groups.map(({ pack, munins }) => {
+            { groups && groups.map(({ pack, munin }) => {
               const icon = <PackIcon naked name={pack} />;
 
               return (
                 <FlexTableWrapper key={pack} uid={pack} title={pack} icon={icon}>
-                  { munins.map((munin) => (
+                  { munin.map((munin) => (
                     <MuninFlexCard
                       key={munin.ref} munin={munin}
                       selected={id === munin.ref}
