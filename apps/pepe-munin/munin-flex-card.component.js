@@ -16,8 +16,6 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import cx from 'classnames';
 
-import Label from '@stackstorm/module-label';
-
 export default class MuninFlexCard extends React.Component {
   static propTypes = {
     munin: PropTypes.object.isRequired,
@@ -46,9 +44,6 @@ export default class MuninFlexCard extends React.Component {
         ref={selected ? this.context.scrollIntoView : null}
       >
         <div className="st2-flex-card__header">
-          <div className="st2-flex-card__header-status st2-flex-card__column">
-            <Label status={munin.enabled ? 'enabled' : 'disabled'} short />
-          </div>
           <div className="st2-flex-card__column">
             <div className="st2-flex-card__header-primary" title={munin.ref}>
               { munin.name }
