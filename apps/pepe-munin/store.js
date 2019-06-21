@@ -30,6 +30,8 @@ const muninReducer = (state = {}, input) => {
     criteriaSpecs = undefined,
     actionSpec = undefined,
     packSpec = undefined,
+    projects = undefined,
+    queries = undefined,
   } = state;
 
   state = {
@@ -45,6 +47,8 @@ const muninReducer = (state = {}, input) => {
     criteriaSpecs,
     actionSpec,
     packSpec,
+    projects,
+    queries
   };
 
   switch (input.type) {
@@ -82,6 +86,40 @@ const muninReducer = (state = {}, input) => {
       return {
         ...state,
         munin,
+      };
+    }
+
+    case 'FETCH_PEPE_PROJECTS': {
+      switch(input.status) {
+        case 'success':
+          projects = input.payload;
+          break;
+        case 'error':
+          break;
+        default:
+          break;
+      }
+
+      return {
+        ...state,
+        projects,
+      };
+    }
+
+    case 'FETCH_PEPE_QUERIES': {
+      switch(input.status) {
+        case 'success':
+          queries = input.payload;
+          break;
+        case 'error':
+          break;
+        default:
+          break;
+      }
+
+      return {
+        ...state,
+        queries,
       };
     }
 

@@ -40,16 +40,16 @@ export default class MuninFlexCard extends React.Component {
           'st2-flex-card--active': selected,
         })}
         onClick={onClick}
-        data-test={`munin munin:${munin.ref}`}
+        data-test={`munin munin:${munin}`}
         ref={selected ? this.context.scrollIntoView : null}
       >
         <div className="st2-flex-card__header">
           <div className="st2-flex-card__column">
-            <div className="st2-flex-card__header-primary" title={munin.ref}>
-              { munin.name }
+            <div className="st2-flex-card__header-primary" title={munin.project.name}>
+              { munin.project.name }
             </div>
             <div className="st2-flex-card__header-secondary">
-              { munin.description }
+              { munin.query.value }
             </div>
           </div>
         </div>

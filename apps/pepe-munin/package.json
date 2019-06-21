@@ -45,6 +45,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@stackstorm/module-pepe": "^2.4.1",
     "@stackstorm/module-api": "^2.4.1",
     "@stackstorm/module-auto-form": "^2.4.1",
     "@stackstorm/module-criteria": "^2.4.1",

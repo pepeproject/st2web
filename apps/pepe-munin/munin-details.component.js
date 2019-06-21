@@ -68,7 +68,7 @@ import RemoteForm from '@stackstorm/module-remote-form';
       dispatch({
         type: 'FETCH_RULE',
         promise: api.request({
-          path: `/munin/views/${props.id}`,
+          path: `/rules/views/${props.id}`,
         })
           .catch((err) => {
             notification.error(`Unable to retrieve the munin "${props.id}".`, { err });
@@ -80,7 +80,7 @@ import RemoteForm from '@stackstorm/module-remote-form';
       type: 'EDIT_RULE',
       promise: api.request({
         method: 'put',
-        path: `/munin/${munin.id}`,
+        path: `/rules/${munin.id}`,
       }, munin)
         .then((munin) => {
           notification.success(`Munin "${munin.ref}" has been saved successfully.`);
@@ -97,7 +97,7 @@ import RemoteForm from '@stackstorm/module-remote-form';
           throw err;
         })
         .then((munin) => api.request({
-          path: `/munin/views/${munin.ref}`,
+          path: `/rules/views/${munin.ref}`,
         }))
         .catch((err) => {
           notification.error(`Unable to retrieve the munin "${munin.ref}".`, { err });
@@ -109,7 +109,7 @@ import RemoteForm from '@stackstorm/module-remote-form';
       ref,
       promise: api.request({
         method: 'delete',
-        path: `/munin/${ref}`,
+        path: `/rules/${ref}`,
       })
         .then((res) => {
           notification.success(`Munin "${ref}" has been deleted successfully.`);
