@@ -22,9 +22,8 @@ import setTitle from '@stackstorm/module-title';
 
 import { Link } from '@stackstorm/module-router';
 import Criteria from '@stackstorm/module-criteria';
-import Button, { Toggle } from '@stackstorm/module-forms/button.component';
+import Button from '@stackstorm/module-forms/button.component';
 import Highlight from '@stackstorm/module-highlight';
-import PackIcon from '@stackstorm/module-pack-icon';
 import {
   PanelDetails,
   DetailsHeader,
@@ -41,13 +40,10 @@ import {
   DetailsToolbarSeparator,
 } from '@stackstorm/module-panel';
 import RemoteForm from '@stackstorm/module-remote-form';
-import EnforcementPanel from './panels/enforcements';
 
 @connect(
   ({
     munin,
-
-    enforcements,
 
     triggerParameters,
     actionParameters,
@@ -58,8 +54,6 @@ import EnforcementPanel from './panels/enforcements';
     packSpec,
   }, props) => ({
     munin,
-
-    enforcements,
 
     triggerParameters,
     actionParameters,
@@ -78,17 +72,6 @@ import EnforcementPanel from './panels/enforcements';
         })
           .catch((err) => {
             notification.error(`Unable to retrieve the munin "${props.id}".`, { err });
-            throw err;
-          }),
-      }),
-      dispatch({
-        type: 'FETCH_ENFORCEMENTS',
-        promise: api.request({ path: '/ruleenforcements/views', query: {
-          munin_ref: props.id,
-          limit: 10,
-        }})
-          .catch((err) => {
-            notification.error(`Unable to retrieve enforcements for "${props.id}".`, { err });
             throw err;
           }),
       }),
@@ -140,20 +123,6 @@ import EnforcementPanel from './panels/enforcements';
           throw err;
         }),
     }),
-    onToggleEnable: (munin) => dispatch({
-      type: 'TOGGLE_ENABLE',
-      promise: api.request({
-        method: 'put',
-        path: `/munin/${munin.id}`,
-      }, { 
-        ...munin, 
-        enabled: !munin.enabled,
-      }),
-    })
-      .catch((err) => {
-        notification.error(`Unable to update munin "${munin.ref}".`, { err });
-        throw err;
-      }),
   }),
   (state, dispatch, props) => ({
     ...props,
@@ -161,7 +130,6 @@ import EnforcementPanel from './panels/enforcements';
     ...dispatch,
     onSave: (munin) => dispatch.onSave(munin),
     onDelete: () => dispatch.onDelete(props.id),
-    onToggleEnable: () => dispatch.onToggleEnable(state.munin),
   })
 )
 export default class MuninDetails extends React.Component {
@@ -171,7 +139,6 @@ export default class MuninDetails extends React.Component {
     onNavigate: PropTypes.func.isRequired,
     onSave: PropTypes.func,
     onDelete: PropTypes.func,
-    onToggleEnable: PropTypes.func,
 
     id: PropTypes.string,
     section: PropTypes.string,
@@ -179,8 +146,6 @@ export default class MuninDetails extends React.Component {
 
     triggerParameters: PropTypes.object,
     actionParameters: PropTypes.object,
-
-    enforcements: PropTypes.array,
 
     triggerSpec: PropTypes.object,
     criteriaSpecs: PropTypes.object,
@@ -277,10 +242,6 @@ export default class MuninDetails extends React.Component {
     return this.props.onDelete();
   }
 
-  handleToggleEnable(munin) {
-    return this.props.onToggleEnable();
-  }
-
   handleToggleRunPreview() {
     let { muninPreview } = this.state;
 
@@ -292,7 +253,6 @@ export default class MuninDetails extends React.Component {
   render() {
     const {
       section,
-      enforcements, 
       triggerParameters, 
       actionParameters, 
       triggerSpec, 
@@ -315,21 +275,18 @@ export default class MuninDetails extends React.Component {
     return (
       <PanelDetails data-test="details">
         <DetailsHeader
-          status={munin.enabled ? 'enabled' : 'disabled'}
           title={( <Link to={`/munin/${munin.ref}`}>{munin.ref}</Link> )}
           subtitle={munin.description}
         />
         <DetailsSwitch
           sections={[
             { label: 'General', path: 'general' },
-            { label: 'Enforcements', path: 'enforcements' },
             { label: 'Code', path: 'code', className: [ 'icon-code', 'st2-details__switch-button' ] },
           ]}
           current={section}
           onChange={({ path }) => this.handleSection(path)}
         />
         <DetailsToolbar>
-          <Toggle title="enabled" value={munin.enabled} onChange={() => this.handleToggleEnable(munin)} />
           { this.state.editing ? [
             <Button key="save" value="Save" onClick={() => this.handleSave()} data-test="save_button" />,
             <Button flat red key="cancel" value="Cancel" onClick={() => this.handleCancel()} data-test="cancel_button" />,
@@ -341,36 +298,6 @@ export default class MuninDetails extends React.Component {
           <DetailsToolbarSeparator />
         </DetailsToolbar>
         { this.state.muninPreview && <Highlight key="preview" well data-test="munin_preview" code={munin} /> }
-        <div className="pepe-munin__conditions">
-          <div className="pepe-munin__condition-if" data-test="condition_if">
-            <div className="pepe-munin__column-trigger" title={munin.trigger.type}>
-              <span className="pepe-munin__label">If</span>
-              <PackIcon className="pepe-munin__condition-icon" name={munin && munin.trigger.type.split('.')[0]} />
-
-              <span className="pepe-munin__name">
-                { munin.trigger.type }
-              </span>
-              { munin.trigger.description ? (
-                <span className="pepe-munin__description">
-                  { munin.trigger.description }
-                </span>
-              ) : null }
-            </div>
-          </div>
-          <div className="pepe-munin__condition-then" data-test="condition_then">
-            <div className="pepe-munin__column-action" title={munin.action.ref}>
-              <span className="pepe-munin__label">Then</span>
-              <PackIcon className="pepe-munin__condition-icon" name={munin && munin.action.ref.split('.')[0]} />
-
-              <span className="pepe-munin__name">
-                { munin.action.ref }
-              </span>
-              <span className="pepe-munin__description">
-                { munin.action.description }
-              </span>
-            </div>
-          </div>
-        </div>
         <DetailsBody>
           { section === 'general' ? (
             !this.state.editing ? (
@@ -524,9 +451,6 @@ export default class MuninDetails extends React.Component {
             <DetailsPanel data-test="munin_code">
               <Highlight code={munin} type="munin" id={munin.id} />
             </DetailsPanel>
-          ) : null }
-          { section === 'enforcements' ? (
-            <EnforcementPanel enforcements={enforcements} data-test="munin_enforcements" />
           ) : null }
         </DetailsBody>
       </PanelDetails>

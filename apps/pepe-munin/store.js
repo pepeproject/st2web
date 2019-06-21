@@ -30,7 +30,6 @@ const muninReducer = (state = {}, input) => {
     criteriaSpecs = undefined,
     actionSpec = undefined,
     packSpec = undefined,
-    enforcements = [],
   } = state;
 
   state = {
@@ -46,7 +45,6 @@ const muninReducer = (state = {}, input) => {
     criteriaSpecs,
     actionSpec,
     packSpec,
-    enforcements,
   };
 
   switch (input.type) {
@@ -220,23 +218,6 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'FETCH_ENFORCEMENTS': {
-      switch(input.status) {
-        case 'success':
-          enforcements = input.payload;
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        enforcements,
-      };
-    }
-
     case 'EDIT_RULE': {
       switch(input.status) {
         case 'success':
@@ -306,32 +287,6 @@ const muninReducer = (state = {}, input) => {
 
       return {
         ...state,
-        munins,
-        groups,
-      };
-    }
-
-    case 'TOGGLE_ENABLE': {
-      switch(input.status) {
-        case 'success':
-          const index = munins.findIndex(({ id }) => id === input.payload.id);
-          munin = { ...input.payload, action: munins[index].action, trigger: munins[index].trigger };
-          munins = [
-            ...munins.slice(0, index),
-            munin,
-            ...munins.slice(index + 1),
-          ];
-          groups = makeGroups(munins, filter);
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        munin,
         munins,
         groups,
       };

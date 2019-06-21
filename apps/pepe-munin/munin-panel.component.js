@@ -177,7 +177,7 @@ export default class MuninPanel extends React.Component {
 
   get urlParams() {
     const {
-      ref = get('groups[0].munin[0].ref', this.props),
+      ref = get('groups[0].rules[0].ref', this.props),
       section = 'general',
     } = this.props.match.params;
 
