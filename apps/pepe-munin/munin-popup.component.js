@@ -151,11 +151,11 @@ export default class MuninPopup extends React.Component {
     const { triggerSpec, criteriaSpecs, actionSpec, packSpec, onCancel } = this.props;
     const payload = this.state.payload;
 
-    setTitle([ 'Create', 'Munin' ]);
+    setTitle([ 'Create', 'Query' ]);
 
     return (
       <div className="st2-rerun">
-        <Popup title="Create a munin" onCancel={() => onCancel()} data-test="munin_create_popup">
+        <Popup title="Create a query" onCancel={() => onCancel()} data-test="munin_create_popup">
           <form>
             <DetailsPanel>
               <DetailsPanelBody>
@@ -168,8 +168,13 @@ export default class MuninPopup extends React.Component {
                         required: true,
                         pattern: '^[\\w.-]+$',
                       },
-                      description: {
+                      value: {
                         type: 'string',
+                        required: true,
+                      },
+                      uri_conenction: {
+                        type: 'string',
+                        required: true,
                       },
                     },
                   }}
@@ -178,56 +183,19 @@ export default class MuninPopup extends React.Component {
                 />
 
                 <AutoFormCombobox
-                  name="pack"
+                  name="project"
                   spec={packSpec || emptySpec}
                   data={payload.pack}
                   onChange={(pack) => this.handleChange('pack', pack)}
                 />
 
-                <AutoFormCheckbox
-                  name="enabled"
-                  spec={{
-                    name: 'enabled',
-                    type: 'boolean',
-                    default: true,
-                  }}
-                  data={payload.enabled}
-                  onChange={(enabled) => this.handleChange('enabled', enabled)}
+              <AutoFormCombobox
+                  name="provider"
+                  spec={packSpec || emptySpec}
+                  data={payload.pack}
+                  onChange={(pack) => this.handleChange('pack', pack)}
                 />
-              </DetailsPanelBody>
-            </DetailsPanel>
-
-            <DetailsPanel title="Trigger">
-              <DetailsPanelBody>
-                <RemoteForm
-                  name="trigger"
-                  spec={triggerSpec || emptySpec}
-                  data={payload.trigger}
-                  onChange={(trigger) => this.handleChange('trigger', trigger)}
-                  data-test="munin_create_trigger_form"
-                />
-              </DetailsPanelBody>
-            </DetailsPanel>
-
-            <DetailsPanel title="Criteria">
-              <DetailsPanelBody>
-                <Criteria
-                  spec={criteriaSpecs && criteriaSpecs[payload.trigger.type] || emptySpec}
-                  data={payload.criteria}
-                  onChange={(criteria) => this.handleChange('criteria', criteria)}
-                />
-              </DetailsPanelBody>
-            </DetailsPanel>
-
-            <DetailsPanel title="Action">
-              <DetailsPanelBody>
-                <RemoteForm
-                  name="action"
-                  spec={actionSpec || emptySpec}
-                  data={payload.action}
-                  onChange={(action) => this.handleChange('action', action)}
-                  data-test="munin_create_action_form"
-                />
+         
               </DetailsPanelBody>
             </DetailsPanel>
 
