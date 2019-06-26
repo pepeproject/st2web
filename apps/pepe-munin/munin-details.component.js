@@ -21,54 +21,24 @@ import notification from '@stackstorm/module-notification';
 import setTitle from '@stackstorm/module-title';
 
 import { Link } from '@stackstorm/module-router';
-import Criteria from '@stackstorm/module-criteria';
 import Button from '@stackstorm/module-forms/button.component';
-import Highlight from '@stackstorm/module-highlight';
 import {
   PanelDetails,
   DetailsHeader,
-  DetailsSwitch,
   DetailsBody,
-  DetailsLine,
-  DetailsFormLine,
-  DetailsCriteriaLine,
-  DetailsLineNote,
   DetailsPanel,
-  DetailsPanelHeading,
-  DetailsPanelBody,
   DetailsToolbar,
   DetailsToolbarSeparator,
 } from '@stackstorm/module-panel';
-import RemoteForm from '@stackstorm/module-remote-form';
+import Table from '@stackstorm/app-packs/table.component';
 
-@connect(
-  ({
-    munin,
-
-    triggerParameters,
-    actionParameters,
-
-    triggerSpec,
-    criteriaSpecs,
-    actionSpec,
-    packSpec,
-  }, props) => ({
-    munin,
-
-    triggerParameters,
-    actionParameters,
-
-    triggerSpec,
-    criteriaSpecs,
-    actionSpec,
-    packSpec,
-  }),
+@connect(({ munin }, props) => ({ munin }),
   (dispatch, props) => ({
     onComponentUpdate: () => props.id && Promise.all([
       dispatch({
-        type: 'FETCH_RULE',
+        type: 'FETCH_QUERY',
         promise: api.request({
-          path: `/rules/views/${props.id}`,
+          path: `/munin/views/${props.id}`,
         })
           .catch((err) => {
             notification.error(`Unable to retrieve the munin "${props.id}".`, { err });
@@ -143,14 +113,6 @@ export default class MuninDetails extends React.Component {
     id: PropTypes.string,
     section: PropTypes.string,
     munin: PropTypes.object,
-
-    triggerParameters: PropTypes.object,
-    actionParameters: PropTypes.object,
-
-    triggerSpec: PropTypes.object,
-    criteriaSpecs: PropTypes.object,
-    actionSpec: PropTypes.object,
-    packSpec: PropTypes.object,
   }
 
   state = {
@@ -176,7 +138,7 @@ export default class MuninDetails extends React.Component {
 
   handleSection(section) {
     const { munin } = this.props;
-    return this.props.onNavigate({ id: munin.ref, section });
+    return this.props.onNavigate({ id: munin.id, section });
   }
 
   handleChange(path, value) {
@@ -251,207 +213,28 @@ export default class MuninDetails extends React.Component {
   }
 
   render() {
-    const {
-      section,
-      triggerParameters, 
-      actionParameters, 
-      triggerSpec, 
-      criteriaSpecs, 
-      actionSpec, 
-      packSpec,
-    } = this.props;
-
     const munin = this.state.editing || this.props.munin;
 
-    if (!munin || !triggerParameters || !actionParameters) {
+    if (!munin) {
       return false;
     }
 
-    const trigger = triggerParameters[munin.trigger.type];
-    const action = actionParameters[munin.action.ref];
-
-    setTitle([ munin.ref, 'Munin' ]);
+    setTitle([ munin.name, 'Munin' ]);
 
     return (
       <PanelDetails data-test="details">
         <DetailsHeader
-          title={( <Link to={`/munin/${munin.ref}`}>{munin.ref}</Link> )}
-          subtitle={munin.description}
-        />
-        <DetailsSwitch
-          sections={[
-            { label: 'General', path: 'general' },
-            { label: 'Code', path: 'code', className: [ 'icon-code', 'st2-details__switch-button' ] },
-          ]}
-          current={section}
-          onChange={({ path }) => this.handleSection(path)}
+          title={( <Link to={`/munin/${munin.id}`}>{munin.name}</Link> )}
+          subtitle={munin.value}
         />
         <DetailsToolbar>
-          { this.state.editing ? [
-            <Button key="save" value="Save" onClick={() => this.handleSave()} data-test="save_button" />,
-            <Button flat red key="cancel" value="Cancel" onClick={() => this.handleCancel()} data-test="cancel_button" />,
-            <Button flat key="preview" value="Preview" onClick={() => this.handleToggleRunPreview()} />,
-          ] : [
-            <Button flat key="edit" value="Edit" onClick={() => this.handleEdit()} data-test="edit_button" />,
-            <Button flat red key="delete" value="Delete" onClick={() => this.handleDelete()} data-test="delete_button" />,
-          ] }
+            <Button flat red value="Remove" onClick={() => this.handleRemove()} />
           <DetailsToolbarSeparator />
         </DetailsToolbar>
-        { this.state.muninPreview && <Highlight key="preview" well data-test="munin_preview" code={munin} /> }
         <DetailsBody>
-          { section === 'general' ? (
-            !this.state.editing ? (
-              <div>
-                <DetailsPanel>
-                  <DetailsPanelHeading title="Trigger" />
-                  <DetailsPanelBody>
-                    <Link to={`/triggers/${munin.trigger.type}`}>{munin.trigger.type}</Link>
-                    {
-                      trigger
-                        ? (
-                          trigger
-                            .map(({ name, default:def }) => {
-                              const value = munin.trigger.parameters[name] !== undefined ? munin.trigger.parameters[name] : def;
-    
-                              if (value === undefined) {
-                                return false;
-                              }
-    
-                              return <DetailsFormLine key={name} name={name} value={value} />;
-                            })
-                        ) : (
-                          <div>
-                            Trigger is missing
-                          </div>
-                        )
-                        
-                    }
-                  </DetailsPanelBody>
-                </DetailsPanel>
-                <DetailsPanel>
-                  <DetailsPanelHeading title="Action" />
-                  <DetailsPanelBody>
-                    <Link to={`/actions/${munin.action.ref}`}>{munin.action.ref}</Link>
-                    {
-                      action 
-                        ? (
-                          action
-                            .map(({ name, default:def }) => {
-                              const value = munin.action.parameters[name] !== undefined ? munin.action.parameters[name] : def;
-
-                              if (value === undefined) {
-                                return false;
-                              }
-
-                              return <DetailsFormLine key={name} name={name} value={value} />;
-                            })
-                        ) : (
-                          <DetailsLineNote>
-                            Action has not been installed
-                          </DetailsLineNote>
-                        )
-                    }
-                  </DetailsPanelBody>
-                </DetailsPanel>
-                <DetailsPanel>
-                  <DetailsPanelHeading title="Munin" />
-                  <DetailsPanelBody>
-                    <DetailsLine name="pack" value={<Link to={`/packs/${munin.pack}`}>{munin.pack}</Link>} />
-                  </DetailsPanelBody>
-                </DetailsPanel>
-                <DetailsPanel>
-                  <DetailsPanelHeading title="Criteria" />
-                  <DetailsPanelBody>
-                    {
-                      Object.keys(munin.criteria || {}).length
-                        ? (
-                          Object.keys(munin.criteria || {})
-                            .map(name => {
-                              const { type, pattern } = munin.criteria[name];
-                              return <DetailsCriteriaLine key={`${name}//${type}//${pattern}`} name={name} type={type} pattern={pattern} />;
-                            })
-                        ) : (
-                          <DetailsLineNote>
-                            No criteria defined for this munin
-                          </DetailsLineNote>
-                        )
-                    }
-                  </DetailsPanelBody>
-                </DetailsPanel>
-              </div>
-            ) : (
-              <form name="form">
-                { triggerSpec ? (
-                  <DetailsPanel>
-                    <DetailsPanelHeading title="Trigger" />
-                    <DetailsPanelBody>
-                      <RemoteForm
-                        name="trigger"
-                        disabled={!this.state.editing}
-                        spec={triggerSpec}
-                        data={munin.trigger}
-                        onChange={(trigger) => this.handleChange('trigger', trigger)}
-                        data-test="munin_trigger_form"
-                      />
-                    </DetailsPanelBody>
-                  </DetailsPanel>
-                ) : null }
-                { criteriaSpecs ? (
-                  <DetailsPanel>
-                    <DetailsPanelHeading title="Criteria" />
-                    <DetailsPanelBody>
-                      <Criteria
-                        disabled={!this.state.editing}
-                        data={munin.criteria}
-                        spec={criteriaSpecs[munin.trigger.type]}
-                        onChange={(criteria) => this.handleChange('criteria', criteria)}
-                        data-test="munin_criteria_form"
-                      />
-                    </DetailsPanelBody>
-                  </DetailsPanel>
-                ) : null }
-                { actionSpec ? (
-                  <DetailsPanel>
-                    <DetailsPanelHeading title="Action" />
-                    <DetailsPanelBody>
-                      <RemoteForm
-                        name="action"
-                        disabled={!this.state.editing}
-                        spec={actionSpec}
-                        data={munin.action}
-                        onChange={(action) => this.handleChange('action', action)}
-                        data-test="munin_action_form"
-                      />
-                    </DetailsPanelBody>
-                  </DetailsPanel>
-                ) : null }
-                { packSpec ? (
-                  <DetailsPanel>
-                    <DetailsPanelHeading title="Munin" />
-                    <DetailsPanelBody>
-                      <RemoteForm
-                        name="pack"
-                        disabled={!this.state.editing}
-                        spec={packSpec}
-                        data={{ pack: munin.pack, parameters: munin }}
-                        onChange={({ pack, parameters: munin }) =>
-                          pack === munin.pack
-                            ? this.handleChange(null, munin)
-                            : this.handleChange('pack', pack)
-                        }
-                        data-test="munin_pack_form"
-                      />
-                    </DetailsPanelBody>
-                  </DetailsPanel>
-                ) : null }
-              </form>
-            )
-          ) : null }
-          { section === 'code' ? (
-            <DetailsPanel data-test="munin_code">
-              <Highlight code={munin} type="munin" id={munin.id} />
-            </DetailsPanel>
-          ) : null }
+          <DetailsPanel>
+            <Table content={munin.packMeta} data-test="pack_info" />
+          </DetailsPanel>
         </DetailsBody>
       </PanelDetails>
     );

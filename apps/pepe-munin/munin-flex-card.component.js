@@ -45,11 +45,11 @@ export default class MuninFlexCard extends React.Component {
       >
         <div className="st2-flex-card__header">
           <div className="st2-flex-card__column">
-            <div className="st2-flex-card__header-primary" title={munin.project.name}>
-              { munin.project.name }
+            <div className="st2-flex-card__header-primary" title={munin.name}>
+              { munin.name }
             </div>
             <div className="st2-flex-card__header-secondary">
-              { munin.query.value }
+              { munin.value }
             </div>
           </div>
         </div>

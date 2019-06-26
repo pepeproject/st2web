@@ -23,15 +23,7 @@ const muninReducer = (state = {}, input) => {
     groups = null,
     filter = '',
     munin = undefined,
-    triggerParameters = undefined,
-    actionParameters = undefined,
-    packs = undefined,
-    triggerSpec = undefined,
-    criteriaSpecs = undefined,
-    actionSpec = undefined,
-    packSpec = undefined,
     projects = undefined,
-    queries = undefined,
   } = state;
 
   state = {
@@ -40,22 +32,14 @@ const muninReducer = (state = {}, input) => {
     groups,
     filter,
     munin,
-    triggerParameters,
-    actionParameters,
-    packs,
-    triggerSpec,
-    criteriaSpecs,
-    actionSpec,
-    packSpec,
     projects,
-    queries
   };
 
   switch (input.type) {
     case 'FETCH_GROUPS': {
       switch(input.status) {
         case 'success':
-          munins = input.payload;
+          munins = input.payload._embedded.query;
           groups = makeGroups(munins, filter);
           break;
         case 'error':
@@ -72,7 +56,7 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'FETCH_RULE': {
+    case 'FETCH_QUERY': {
       switch(input.status) {
         case 'success':
           munin = input.payload;
@@ -89,10 +73,10 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'FETCH_PEPE_PROJECTS': {
+    case 'FETCH_PROJECTS': {
       switch(input.status) {
         case 'success':
-          projects = input.payload;
+          projects = input.payload._embedded.project;
           break;
         case 'error':
           break;
@@ -106,157 +90,7 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'FETCH_PEPE_QUERIES': {
-      switch(input.status) {
-        case 'success':
-          queries = input.payload;
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        queries,
-      };
-    }
-
-    case 'FETCH_TRIGGERS': {
-      switch(input.status) {
-        case 'success':
-          criteriaSpecs = {};
-
-          const triggers = input.payload;
-
-          triggerSpec = {
-            name: 'type',
-            required: true,
-            enum: _.map(triggers, (trigger) => {
-              criteriaSpecs[trigger.ref] = {
-                required: true,
-                enum: _.map(trigger.payload_schema.properties, (spec, name) => ({
-                  name: `trigger.${name}`,
-                  description: spec.description,
-                })),
-              };
-
-              return {
-                name: trigger.ref,
-                description: trigger.description,
-                spec: trigger.parameters_schema,
-              };
-            }),
-          };
-
-          triggerParameters = _.mapValues(_.keyBy(triggers, 'ref'), trigger => {
-            return _.keys(trigger.parameters_schema.properties)
-              .map(key => {
-                return {
-                  name: key,
-                  default: trigger.parameters_schema.properties[key].default,
-                };
-              });
-          });
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        triggerSpec,
-        criteriaSpecs,
-        triggerParameters,
-      };
-    }
-
-    case 'FETCH_ACTIONS': {
-      switch(input.status) {
-        case 'success':
-          const actions = input.payload;
-
-          actionSpec = {
-            name: 'ref',
-            required: true,
-            enum: _.map(actions, (action) => ({
-              name: action.ref,
-              description: action.description,
-              spec: {
-                type: 'object',
-                properties: action.parameters,
-              },
-            })),
-          };
-
-          actionParameters = _.mapValues(_.keyBy(actions, 'ref'), action => {
-            return Object.keys(action.parameters || {})
-              .map(key => {
-                return {
-                  name: key,
-                  default: action.parameters[key].default,
-                };
-              });
-          });
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        actionSpec,
-        actionParameters,
-      };
-    }
-
-    case 'FETCH_PACKS': {
-      switch(input.status) {
-        case 'success':
-          packs = input.payload;
-
-          packSpec = {
-            name: 'pack',
-            required: true,
-            default: 'default',
-            enum: _.map(packs, (pack) => ({
-              name: pack.name,
-              description: pack.description,
-              spec: {
-                type: 'object',
-                properties: {
-                  name: {
-                    type: 'string',
-                    required: true,
-                    pattern: '^[\\w.-]+$',
-                  },
-                  description: {
-                    type: 'string',
-                  },
-                },
-              },
-            })),
-          };
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        packSpec,
-        packs,
-      };
-    }
-
-    case 'EDIT_RULE': {
+    case 'EDIT_QUERY': {
       switch(input.status) {
         case 'success':
           munin = input.payload;
@@ -286,7 +120,7 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'CREATE_RULE': {
+    case 'CREATE_QUERY': {
       switch(input.status) {
         case 'success':
           munin = input.payload;
@@ -307,7 +141,7 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'DELETE_RULE': {
+    case 'DELETE_QUERY': {
       const { ref } = input;
 
       switch(input.status) {
@@ -359,11 +193,11 @@ export default store;
 
 function makeGroups(munins, filter) {
   const groups = _(munins)
-    .filter(({ ref }) => ref.toLowerCase().indexOf(filter.toLowerCase()) > -1)
-    .sortBy('ref')
-    .groupBy('pack')
+    .filter(({ name }) => name.toLowerCase().indexOf(filter.toLowerCase()) > -1)
+    .sortBy('name')
+    .groupBy('project')
     .value()
   ;
 
-  return Object.keys(groups).map((pack) => ({ pack, munin: groups[pack] }));
+  return Object.keys(groups).map((project) => ({ project, munins: groups[project] }));
 }

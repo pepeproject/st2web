@@ -21,8 +21,6 @@ import get from 'lodash/fp/get';
 
 import api from '../../modules/pepe';
 
-
-
 import {
   actions as flexActions,
 } from '@stackstorm/module-flex-table/flex-table.reducer';
@@ -30,7 +28,6 @@ import notification from '@stackstorm/module-notification';
 import setTitle from '@stackstorm/module-title';
 
 import FlexTable from '@stackstorm/module-flex-table/flex-table.component';
-import PackIcon from '@stackstorm/module-pack-icon';
 import {
   Panel,
   PanelView,
@@ -71,24 +68,17 @@ class FlexTableWrapper extends FlexTable {
 }
 
 @connect(({
-  munin, groups, queries, filter, collapsed,
+  munin, groups, filter, collapsed,
 }) => ({
-  munin, groups, queries, filter, collapsed,
+  munin, groups, filter, collapsed,
 }))
 export default class MuninPanel extends React.Component {
   static propTypes = {
     location: PropTypes.shape({
       search: PropTypes.string,
     }),
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        ref: PropTypes.string,
-        section: PropTypes.string,
-      }),
-    }),
 
     groups: PropTypes.array,
-    queries: PropTypes.array,
     filter: PropTypes.string,
 
     collapsed: PropTypes.bool,
@@ -98,60 +88,12 @@ export default class MuninPanel extends React.Component {
     this.fetchGroups();
 
     store.dispatch({
-      type: 'FETCH_PACKS',
+      type: 'FETCH_PROJECTS',
       promise: api.request({
-        path: '/packs',
-        query: {
-          include_attributes: [
-            'name',
-            'description',
-          ],
-        },
+        path: '/project',
       })
         .catch((err) => {
-          notification.error('Unable to retrieve pack spec.', { err });
-          throw err;
-        }),
-    });
-
-    store.dispatch({
-      type: 'FETCH_TRIGGERS',
-      promise: api.request({
-        path: '/triggertypes',
-        // NOTE: If we don't retrieve all the attributes, "TypeError: Cannot read property 'properties' of undefined"
-        // error is thrown
-        /*query: {
-          include_attributes: [
-            'id',
-            'ref',
-            'pack',
-            'name',
-            'description',
-            'parameters_schema',
-            'payload_schema',
-          ],
-        },*/
-      })
-        .catch((err) => {
-          notification.error('Unable to retrieve trigger spec.', { err });
-          throw err;
-        }),
-    });
-
-    store.dispatch({
-      type: 'FETCH_ACTIONS',
-      promise: api.request({
-        path: '/actions/views/overview',
-        query: {
-          include_attributes: [
-            'ref',
-            'description',
-            'parameters',
-          ],
-        },
-      })
-        .catch((err) => {
-          notification.error('Unable to retrieve action spec.', { err });
+          notification.error('Unable to retrieve project spec.', { err });
           throw err;
         }),
     });
@@ -159,19 +101,19 @@ export default class MuninPanel extends React.Component {
 
   fetchGroups() {
     return store.dispatch({
-      type: 'FETCH_PEPE_QUERIES',
+      type: 'FETCH_GROUPS',
       promise: api.request({
         path: '/munin/view',
       })
-        .catch((err) => {
-          notification.error('Unable to retrieve munin.', { err });
-          throw err;
-        }),
+      .catch((err) => {
+        notification.error('Unable to retrieve munin.', { err });
+        throw err;
+      }),
     })
       .then(() => {
         const { id } = this.urlParams;
-        const { queries } = this.props;
-        if (id && id !== 'new' && queries) {
+        const { groups } = this.props;
+        if (id && id !== 'new' && groups && !groups.some(({ munin }) => munin.some(({ ref }) => ref === id))) {
           this.navigate({ id: false });
         }
       })
@@ -239,7 +181,7 @@ export default class MuninPanel extends React.Component {
   }
 
   render() {
-    const { groups, queries, filter, collapsed } = this.props;
+    const { groups, filter, collapsed } = this.props;
     const { id, section } = this.urlParams;
 
     setTitle([ 'Munin' ]);
@@ -261,14 +203,14 @@ export default class MuninPanel extends React.Component {
             />
           </Toolbar>
           <Content>
-            { queries && queries.map(({ munins }) => {
+            { groups && groups.map(({ project, munins }) => {
               return (
-                <FlexTableWrapper key={munins} uid={munins} title={munins}>
-                  { queries.map((munin) => (
+                <FlexTableWrapper key={project} title={project} uid={project}>
+                  { munins.map((munin) => (
                     <MuninFlexCard
-                      key={munin.query.name} munin={munin}
-                      selected={id === munin.project.name}
-                      onClick={() => this.handleSelect(munin.project.name)}
+                      key={munin.id} munin={munin}
+                      selected={id === munin.id}
+                      onClick={() => this.handleSelect(munin.id)}
                     />
                   )) }
                 </FlexTableWrapper>
@@ -276,7 +218,7 @@ export default class MuninPanel extends React.Component {
               
             }) }
 
-            { !queries || queries.length > 0 ? null : (
+            { !groups || groups.length > 0 ? null : (
               <ContentEmpty />
             ) }
           </Content>
