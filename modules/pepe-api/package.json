@@ -1,6 +1,6 @@
 {
-  "name": "@stackstorm/module-pepe",
-  "version": "2.4.1",
+  "name": "module-pepe-api",
+  "version": "1.0.0",
   "description": "",
   "main": "api.js",
   "directories": {
@@ -11,13 +11,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stackstorm/st2web.git"
+    "url": "git+https://github.com/pepeproject/st2web.git"
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/stackstorm/st2web/issues"
+    "url": "https://github.com/pepeproject/st2web/issues"
   },
-  "homepage": "https://github.com/stackstorm/st2web#readme",
+  "homepage": "https://github.com/pepeproject/st2web#readme",
   "browserify": {
     "transform": [
       "babelify"
