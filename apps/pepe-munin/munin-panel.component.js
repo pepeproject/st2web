@@ -19,7 +19,7 @@ import store from './store';
 
 import get from 'lodash/fp/get';
 
-import api from '../../modules/pepe';
+import api from '../../modules/pepe-api';
 
 import {
   actions as flexActions,

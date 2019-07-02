@@ -16,7 +16,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 
-import api from '../../modules/pepe';
+import api from '../../modules/pepe-api';
 import notification from '@stackstorm/module-notification';
 import setTitle from '@stackstorm/module-title';
 
