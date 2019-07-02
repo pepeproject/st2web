@@ -15,8 +15,8 @@
 import Munin from './munin.component';
 
 const route = {
-  title: 'Munin',
-  url: '/munin',
+  title: 'Metric',
+  url: '/metric',
   icon: 'icon-book-closed',
   Component: Munin,
   position: 3,

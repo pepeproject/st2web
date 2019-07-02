@@ -23,7 +23,12 @@ const muninReducer = (state = {}, input) => {
     groups = null,
     filter = '',
     munin = undefined,
-    projects = undefined,
+    projects = [],
+    project = undefined,
+    muninSpec = undefined,
+    projectsSpec = undefined,
+    connections = [],
+    connectionsSpec = undefined,
   } = state;
 
   state = {
@@ -33,6 +38,11 @@ const muninReducer = (state = {}, input) => {
     filter,
     munin,
     projects,
+    muninSpec,
+    projectsSpec,
+    project,
+    connections,
+    connectionsSpec,
   };
 
   switch (input.type) {
@@ -40,6 +50,36 @@ const muninReducer = (state = {}, input) => {
       switch(input.status) {
         case 'success':
           munins = input.payload._embedded.query;
+
+          muninSpec = {
+            name: 'munin',
+            required: true,
+            default: 'default',
+            enum: _.map(munins, (munin) => ({
+              name: munin.name,
+              description: munin.query,
+              spec: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                    required: true,
+                    pattern: '^[\\w.-]+$',
+                  },
+                  value: {
+                    type: 'string',
+                    required: true,
+                  },
+                  uri_conenction: {
+                    type: 'string',
+                    required: true,
+                  },
+                },
+              },
+            })),
+          };
+
+
           groups = makeGroups(munins, filter);
           break;
         case 'error':
@@ -76,17 +116,78 @@ const muninReducer = (state = {}, input) => {
     case 'FETCH_PROJECTS': {
       switch(input.status) {
         case 'success':
-          projects = input.payload._embedded.project;
+          projects = input.payload;
+          projectsSpec = {
+            name: 'project',
+            required: true,
+            enum: _.map(projects, (project) => ({
+              id: project.id,
+              name: project.name,
+              spec: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                  name: {
+                    type: 'string',
+                    required: true,
+                    pattern: '^[\\w.-]+$',
+                  },
+                },
+              },
+            })),
+          };
           break;
         case 'error':
           break;
         default:
           break;
       }
-
       return {
         ...state,
+        projectsSpec,
         projects,
+      };
+    }
+
+    case 'FETCH_CONNECTION': {
+      switch(input.status) {
+        case 'success':
+          connections = input.payload;
+
+          connectionsSpec = {
+            name: 'connection',
+            required: true,
+            enum: _.map(connections, (connection) => ({
+              id: connection.id,
+              name: connection.name,
+              spec: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                  name: {
+                    type: 'string',
+                    required: true,
+                    pattern: '^[\\w.-]+$',
+                  },
+                },
+              },
+            })),
+          };
+          break;
+        case 'error':
+          break;
+        default:
+          break;
+
+      }
+      return{
+        ...state,
+        connectionsSpec,
+        connections,
       };
     }
 
@@ -180,9 +281,9 @@ const muninReducer = (state = {}, input) => {
   }
 };
 
-const reducer = (state = {}, action) => {
-  state = flexTableReducer(state, action);
-  state = muninReducer(state, action);
+const reducer = (state = {}, project) => {
+  state = flexTableReducer(state, project);
+  state = muninReducer(state, project);
 
   return state;
 };

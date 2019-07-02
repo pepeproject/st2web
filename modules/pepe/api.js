@@ -72,7 +72,7 @@ export class API {
 
     if (api) {
       this.server = {
-        api: localize(api),
+        api: localize(munin),
         auth: localize(auth),
         munin: localize(munin),
         stream: stream && localize(stream),
@@ -81,7 +81,7 @@ export class API {
     }
     else {
       this.server = {
-        api: `${window.location.protocol || 'https:'}//${window.location.host}/api`,
+        api: `${window.location.protocol || 'https:'}//${window.location.host}/munin`,
         auth: `${window.location.protocol || 'https:'}//${window.location.host}/auth`,
         stream: `${window.location.protocol || 'https:'}//${window.location.host}/stream`,
         munin: `${window.location.protocol || 'https:'}//${window.location.host}/munin`,
@@ -166,7 +166,7 @@ export class API {
 
     const verPath = version ? `/${_.trim(version, '/')}` : '';
 
-    return `${this.server.api}${verPath}${path}`;
+    return `munin${verPath}${path}`;
   }
 
   async request(opts, data) {
