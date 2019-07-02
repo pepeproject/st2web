@@ -296,7 +296,7 @@ function makeGroups(munins, filter) {
   const groups = _(munins)
     .filter(({ name }) => name.toLowerCase().indexOf(filter.toLowerCase()) > -1)
     .sortBy('name')
-    .groupBy('project')
+    .groupBy('project.name')
     .value()
   ;
 
