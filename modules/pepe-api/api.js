@@ -111,7 +111,7 @@ export class API {
     response.headers = response.headers || {};
     response.statusCode = response.status;
 
-    response.body = JSON.parse(response.body);
+    response.body = JSON.parse(response.data);
 
     return response.data;
   }
