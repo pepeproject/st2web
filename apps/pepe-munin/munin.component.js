@@ -36,7 +36,7 @@ export default class Munin extends React.Component {
   render() {
     return (
       <Route
-        path='/munin/:ref?/:section?'
+        path='/metric/:ref?/:section?'
         render={({ match, location }) => {
           return (
             <Provider store={store}>

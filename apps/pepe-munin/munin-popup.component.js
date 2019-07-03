@@ -16,7 +16,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 
-import api from '@stackstorm/module-api';
+import api from '../../modules/pepe-api';
 import setTitle from '@stackstorm/module-title';
 import notification from '@stackstorm/module-notification';
 
@@ -40,13 +40,13 @@ const emptySpec = { enum: [] };
 
 @connect(
   ({
-    triggerSpec, criteriaSpecs, actionSpec, packSpec,
+    projectsSpec, connectionsSpec,
   }) => ({
-    triggerSpec, criteriaSpecs, actionSpec, packSpec,
+    projectsSpec, connectionsSpec,
   }),
   (dispatch, props) => ({
     onSubmit: (munin) => dispatch({
-      type: 'CREATE_RULE',
+      type: 'CREATE_QUERY',
       promise: api.request({
         method: 'post',
         path: '/munin',
@@ -71,28 +71,30 @@ const emptySpec = { enum: [] };
 )
 export default class MuninPopup extends React.Component {
   static propTypes = {
-    triggerSpec: PropTypes.object,
-    criteriaSpecs: PropTypes.object,
-    actionSpec: PropTypes.object,
-    packSpec: PropTypes.object,
-
+    projectsSpec: PropTypes.object,
+    connectionsSpec: PropTypes.object,
     onSubmit: PropTypes.func,
     onCancel: PropTypes.func,
   }
 
   state = {
-    payload: {
-      pack: '',
-      enabled: true,
-      trigger: {
-        type: '',
-        parameters: {},
+      payload: {
+        metric: {
+        name: '',
+      project: {
+        keystone: {
+          login: '',
+          password: '',
+        },
       },
-      criteria: {},
-      action: {
-        ref: '',
-        parameters: {},
-      },
+      connection: {
+        name: '',
+        url: '',
+        login: '',
+        password: '',
+        driver: '',
+      }
+      }
     },
   }
 
@@ -143,12 +145,11 @@ export default class MuninPopup extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
     this.props.onSubmit(this.state.payload);
   }
 
   render() {
-    const { triggerSpec, criteriaSpecs, actionSpec, packSpec, onCancel } = this.props;
+    const {projectsSpec, connectionsSpec, onCancel } = this.props;
     const payload = this.state.payload;
 
     setTitle([ 'Create', 'Query' ]);
@@ -168,15 +169,11 @@ export default class MuninPopup extends React.Component {
                         required: true,
                         pattern: '^[\\w.-]+$',
                       },
-                      value: {
+                      query: {
                         type: 'string',
                         required: true,
                       },
-                      uri_conenction: {
-                        type: 'string',
-                        required: true,
-                      },
-                    },
+                  },
                   }}
                   data={payload}
                   onChange={(meta) => this.handleChange(null, meta)}
@@ -184,18 +181,18 @@ export default class MuninPopup extends React.Component {
 
                 <AutoFormCombobox
                   name="project"
-                  spec={packSpec || emptySpec}
-                  data={payload.pack}
-                  onChange={(pack) => this.handleChange('pack', pack)}
+                  spec={projectsSpec || emptySpec}
+                  data={payload.project}
+                  onChange={(project) => this.handleChange('project', project)}
                 />
 
-              <AutoFormCombobox
-                  name="provider"
-                  spec={packSpec || emptySpec}
-                  data={payload.pack}
-                  onChange={(pack) => this.handleChange('pack', pack)}
+                <AutoFormCombobox
+                  name="connection"
+                  spec={connectionsSpec || emptySpec}
+                  data={payload.connection}
+                  onChange={(connection) => this.handleChange('connection', connection)}
                 />
-         
+
               </DetailsPanelBody>
             </DetailsPanel>
 

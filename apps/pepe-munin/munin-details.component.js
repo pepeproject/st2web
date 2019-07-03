@@ -16,11 +16,13 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 
-import api from '@stackstorm/module-api';
+import api from '../../modules/pepe-api';
 import notification from '@stackstorm/module-notification';
 import setTitle from '@stackstorm/module-title';
 
 import { Link } from '@stackstorm/module-router';
+import RemoteForm from '@stackstorm/module-remote-form';
+
 import Button from '@stackstorm/module-forms/button.component';
 import {
   PanelDetails,
@@ -28,17 +30,20 @@ import {
   DetailsBody,
   DetailsPanel,
   DetailsToolbar,
-  DetailsToolbarSeparator,
+  DetailsToolbarSeparator, DetailsPanelBody, DetailsButtonsPanel,
 } from '@stackstorm/module-panel';
 import Table from '@stackstorm/app-packs/table.component';
+import AutoForm from '@stackstorm/module-auto-form';
+import AutoFormCombobox from '@stackstorm/module-auto-form/modules/combobox';
+import Popup from '@stackstorm/module-popup';
 
-@connect(({ munin }, props) => ({ munin }),
+@connect(({ munin, muninSpec }, props) => ({ munin, muninSpec }),
   (dispatch, props) => ({
     onComponentUpdate: () => props.id && Promise.all([
       dispatch({
         type: 'FETCH_QUERY',
         promise: api.request({
-          path: `/munin/views/${props.id}`,
+          path: `/views/${props.id}`,
         })
           .catch((err) => {
             notification.error(`Unable to retrieve the munin "${props.id}".`, { err });
@@ -113,6 +118,8 @@ export default class MuninDetails extends React.Component {
     id: PropTypes.string,
     section: PropTypes.string,
     munin: PropTypes.object,
+    muninSpec: PropTypes.object,
+
   }
 
   state = {
@@ -213,7 +220,14 @@ export default class MuninDetails extends React.Component {
   }
 
   render() {
-    const munin = this.state.editing || this.props.munin;
+
+
+    const {
+      muninSpec,
+    } = this.props;
+
+
+    const munin = this.props.munin;
 
     if (!munin) {
       return false;
@@ -232,9 +246,45 @@ export default class MuninDetails extends React.Component {
           <DetailsToolbarSeparator />
         </DetailsToolbar>
         <DetailsBody>
-          <DetailsPanel>
-            <Table content={munin.packMeta} data-test="pack_info" />
-          </DetailsPanel>
+          <form>
+            <DetailsPanel>
+              <DetailsPanelBody>
+                <AutoForm
+                  spec={{
+                    type: 'object',
+                    properties: {
+                      name: {
+                        type: 'string',
+                        required: true,
+                        pattern: '^[\\w.-]+$',
+                      },
+                      query: {
+                        type: 'string',
+                        required: true,
+                      },
+                      connection: {
+                        type: 'object',
+                        required: true,
+                      },
+                    project: {
+                      type: 'object',
+                      required: true,
+
+                    },
+                    },
+                  }}
+                  data={munin}
+                  onChange={(meta) => this.handleChange(null, meta)}
+                />
+
+
+
+              </DetailsPanelBody>
+            </DetailsPanel>
+          </form>
+
+
+
         </DetailsBody>
       </PanelDetails>
     );

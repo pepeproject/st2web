@@ -19,7 +19,7 @@ import store from './store';
 
 import get from 'lodash/fp/get';
 
-import api from '../../modules/pepe';
+import api from '../../modules/pepe-api';
 
 import {
   actions as flexActions,
@@ -97,13 +97,26 @@ export default class MuninPanel extends React.Component {
           throw err;
         }),
     });
+
+
+    store.dispatch({
+      type: 'FETCH_CONNECTION',
+      promise: api.request({
+        path: '/connection',
+      })
+        .catch((err) => {
+          notification.error('Unable to retrieve project spec.', { err });
+          throw err;
+        }),
+    });
+
   }
 
   fetchGroups() {
     return store.dispatch({
       type: 'FETCH_GROUPS',
       promise: api.request({
-        path: '/munin/view',
+        path: '/metric/view',
       })
       .catch((err) => {
         notification.error('Unable to retrieve munin.', { err });
@@ -151,7 +164,7 @@ export default class MuninPanel extends React.Component {
       section = undefined;
     }
 
-    const pathname = `/munin${id ? `/${id}${section ? `/${section}` : ''}` : ''}`;
+    const pathname = `/metric${id ? `/${id}${section ? `/${section}` : ''}` : ''}`;
 
     const { location } = this.props;
     if (location.pathname === pathname) {
@@ -177,7 +190,7 @@ export default class MuninPanel extends React.Component {
   }
 
   handleCreatePopup() {
-    router.push({ pathname: '/munin/new' });
+    router.push({ pathname: '/metric/new' });
   }
 
   render() {
