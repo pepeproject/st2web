@@ -68,6 +68,7 @@ export class API {
     const {
       method = 'get',
       query,
+      raw = false,
     } = opts;
 
     const headers = {
@@ -108,10 +109,26 @@ export class API {
   
     const response = await axios(config);
 
+    const contentType = (response.headers || {})['content-type'] || [];
+    const requestId = (response.headers || {})['X-Request-ID'] || null;
+
     response.headers = response.headers || {};
     response.statusCode = response.status;
+    response.body = response.data;
 
-    response.body = JSON.parse(response.data);
+    if (requestId) {
+      response.requestId = requestId;
+    }
+
+    if (raw) {
+      return response;
+    }
+
+    if (contentType.indexOf('application/json') !== -1) {
+      if (typeof response.body === 'string' || response.body instanceof String) {
+        response.body = JSON.parse(response.body);
+      }
+    }
 
     return response.data;
   }
