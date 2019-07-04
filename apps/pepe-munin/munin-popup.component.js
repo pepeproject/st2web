@@ -21,12 +21,9 @@ import setTitle from '@stackstorm/module-title';
 import notification from '@stackstorm/module-notification';
 
 import AutoForm from '@stackstorm/module-auto-form';
-import RemoteForm from '@stackstorm/module-remote-form';
 import Button from '@stackstorm/module-forms/button.component';
-import Criteria from '@stackstorm/module-criteria';
 
-import AutoFormCheckbox from '@stackstorm/module-auto-form/modules/checkbox';
-import AutoFormCombobox from '@stackstorm/module-auto-form/modules/combobox';
+import AutoFormSelect from '@stackstorm/module-auto-form/modules/select';
 
 import {
   DetailsPanel,
@@ -78,14 +75,10 @@ export default class MuninPopup extends React.Component {
   }
 
   state = {
-      payload: {
-        name: '',
-      project: {
-        keystone: {
-          login: '',
-          password: '',
-        },
-      },
+    payload: {
+      name: '',
+      query: '',
+      project: '',
       connection: '',
     },
   }
@@ -100,20 +93,6 @@ export default class MuninPopup extends React.Component {
   }
 
   handleChange(path, value) {
-    const {connectionsSpec } = this.props;
-
-    for (const connection of connectionsSpec.enum) {
-      if(connection.name.includes(value)) {
-        console.log("encontrou");
-      }else{
-        console.log("nao encontrou");
-      }
-   
-    }
-
-
-    console.log(connectionsSpec);
-
     if (!path) {
       return this.setState({
         payload: {
@@ -185,18 +164,15 @@ export default class MuninPopup extends React.Component {
                   onChange={(meta) => this.handleChange(null, meta)}
                 />
 
-                <AutoFormCombobox
-                  name="project"
-                  spec={projectsSpec || emptySpec}
+                <AutoFormSelect
                   data={payload.project}
+                  spec={projectsSpec}
                   onChange={(project) => this.handleChange('project', project)}
                 />
 
-                <AutoFormCombobox
-                  name="connection"
-                  spec={connectionsSpec || emptySpec}
+                <AutoFormSelect
                   data={payload.connection}
-                  value={payload.connection.id}
+                  spec={connectionsSpec}
                   onChange={(connection) => this.handleChange('connection', connection)}
                 />
 

@@ -121,21 +121,8 @@ const muninReducer = (state = {}, input) => {
             name: 'project',
             required: true,
             enum: _.map(projects, (project) => ({
-              id: project.id,
-              name: project.name,
-              spec: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'string',
-                  },
-                  name: {
-                    type: 'string',
-                    required: true,
-                    pattern: '^[\\w.-]+$',
-                  },
-                },
-              },
+              value: `http://localhost/project/${project.id}`,
+              label: project.name,
             })),
           };
           break;
@@ -155,13 +142,12 @@ const muninReducer = (state = {}, input) => {
       switch(input.status) {
         case 'success':
           connections = input.payload._embedded.connection;
-
           connectionsSpec = {
             name: 'connection',
             required: true,
             enum: _.map(connections, (connection) => ({
-              id: connection.id,
-              name: connection.name,
+              value: `http://localhost/connection/${connection.id}`,
+              label: connection.name,
             })),
           };
           break;
@@ -268,9 +254,9 @@ const muninReducer = (state = {}, input) => {
   }
 };
 
-const reducer = (state = {}, project) => {
-  state = flexTableReducer(state, project);
-  state = muninReducer(state, project);
+const reducer = (state = {}, munin) => {
+  state = flexTableReducer(state, munin);
+  state = muninReducer(state, munin);
 
   return state;
 };
