@@ -43,7 +43,7 @@ import Popup from '@stackstorm/module-popup';
       dispatch({
         type: 'FETCH_QUERY',
         promise: api.request({
-          path: `/views/${props.id}`,
+          path: `/metric/${props.id}?projection=recursive`,
         })
           .catch((err) => {
             notification.error(`Unable to retrieve the munin "${props.id}".`, { err });

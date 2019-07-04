@@ -49,20 +49,20 @@ const emptySpec = { enum: [] };
       type: 'CREATE_QUERY',
       promise: api.request({
         method: 'post',
-        path: '/munin',
+        path: '/metric',
       }, munin)
         .then((munin) => {
-          notification.success(`Munin "${munin.ref}" has been created successfully.`);
+          notification.success(`Metric "${munin.name}" has been created successfully.`);
 
           props.onNavigate({
-            id: munin.ref,
+            id: munin.id,
             section: 'general',
           });
 
           return munin;
         })
         .catch((err) => {
-          notification.error('Unable to create munin.', { err });
+          notification.error('Unable to create metric.', { err });
           throw err;
         }),
     }),
@@ -79,7 +79,6 @@ export default class MuninPopup extends React.Component {
 
   state = {
       payload: {
-        metric: {
         name: '',
       project: {
         keystone: {
@@ -87,14 +86,7 @@ export default class MuninPopup extends React.Component {
           password: '',
         },
       },
-      connection: {
-        name: '',
-        url: '',
-        login: '',
-        password: '',
-        driver: '',
-      }
-      }
+      connection: '',
     },
   }
 
@@ -108,6 +100,20 @@ export default class MuninPopup extends React.Component {
   }
 
   handleChange(path, value) {
+    const {connectionsSpec } = this.props;
+
+    for (const connection of connectionsSpec.enum) {
+      if(connection.name.includes(value)) {
+        console.log("encontrou");
+      }else{
+        console.log("nao encontrou");
+      }
+   
+    }
+
+
+    console.log(connectionsSpec);
+
     if (!path) {
       return this.setState({
         payload: {
@@ -145,7 +151,7 @@ export default class MuninPopup extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.onSubmit(this.state.payload);
+   this.props.onSubmit(this.state.payload);
   }
 
   render() {
@@ -190,9 +196,11 @@ export default class MuninPopup extends React.Component {
                   name="connection"
                   spec={connectionsSpec || emptySpec}
                   data={payload.connection}
+                  value={payload.connection.id}
                   onChange={(connection) => this.handleChange('connection', connection)}
                 />
 
+                
               </DetailsPanelBody>
             </DetailsPanel>
 

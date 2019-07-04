@@ -90,7 +90,7 @@ export default class MuninPanel extends React.Component {
     store.dispatch({
       type: 'FETCH_PROJECTS',
       promise: api.request({
-        path: '/project',
+        path: '/project?projection=recursive',
       })
         .catch((err) => {
           notification.error('Unable to retrieve project spec.', { err });
@@ -102,7 +102,7 @@ export default class MuninPanel extends React.Component {
     store.dispatch({
       type: 'FETCH_CONNECTION',
       promise: api.request({
-        path: '/connection',
+        path: '/connection?projection=recursive',
       })
         .catch((err) => {
           notification.error('Unable to retrieve project spec.', { err });
@@ -116,7 +116,7 @@ export default class MuninPanel extends React.Component {
     return store.dispatch({
       type: 'FETCH_GROUPS',
       promise: api.request({
-        path: '/metric/view',
+        path: '/metric?projection=recursive',
       })
       .catch((err) => {
         notification.error('Unable to retrieve munin.', { err });

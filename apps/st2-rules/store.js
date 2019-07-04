@@ -155,7 +155,7 @@ const ruleReducer = (state = {}, input) => {
               },
             })),
           };
-
+          
           actionParameters = _.mapValues(_.keyBy(actions, 'ref'), action => {
             return Object.keys(action.parameters || {})
               .map(key => {

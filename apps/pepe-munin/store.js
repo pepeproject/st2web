@@ -49,7 +49,7 @@ const muninReducer = (state = {}, input) => {
     case 'FETCH_GROUPS': {
       switch(input.status) {
         case 'success':
-          munins = input.payload._embedded.query;
+          munins = input.payload._embedded.metric;
 
           muninSpec = {
             name: 'munin',
@@ -116,7 +116,7 @@ const muninReducer = (state = {}, input) => {
     case 'FETCH_PROJECTS': {
       switch(input.status) {
         case 'success':
-          projects = input.payload;
+          projects = input.payload._embedded.project;
           projectsSpec = {
             name: 'project',
             required: true,
@@ -154,7 +154,7 @@ const muninReducer = (state = {}, input) => {
     case 'FETCH_CONNECTION': {
       switch(input.status) {
         case 'success':
-          connections = input.payload;
+          connections = input.payload._embedded.connection;
 
           connectionsSpec = {
             name: 'connection',
@@ -162,19 +162,6 @@ const muninReducer = (state = {}, input) => {
             enum: _.map(connections, (connection) => ({
               id: connection.id,
               name: connection.name,
-              spec: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'string',
-                  },
-                  name: {
-                    type: 'string',
-                    required: true,
-                    pattern: '^[\\w.-]+$',
-                  },
-                },
-              },
             })),
           };
           break;
