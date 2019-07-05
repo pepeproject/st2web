@@ -33,7 +33,7 @@ import {
 } from '@stackstorm/module-panel';
 import AutoForm from '@stackstorm/module-auto-form';
 
-@connect(({ munin, muninSpec }, props) => ({ munin, muninSpec }),
+@connect(({ metric }, props) => ({ metric }),
   (dispatch, props) => ({
     onComponentUpdate: () => props.id && Promise.all([
       dispatch({
@@ -47,31 +47,31 @@ import AutoForm from '@stackstorm/module-auto-form';
           }),
       }),
     ]),
-    onSave: (munin) => dispatch({
+    onSave: (metric) => dispatch({
       type: 'EDIT_METRIC',
       promise: api.request({
         method: 'put',
-        path: `/metric/${munin.id}`,
-      }, munin)
-        .then((munin) => {
-          notification.success(`Metric "${munin.id}" has been saved successfully.`);
+        path: `/metric/${metric.id}`,
+      }, metric)
+        .then((metric) => {
+          notification.success(`Metric "${metric.id}" has been saved successfully.`);
 
           props.onNavigate({
-            id: munin.id,
+            id: metric.id,
             section: 'general',
           });
 
-          return munin;
+          return metric;
         })
         .catch((err) => {
-          notification.error(`Unable to save metric "${munin.id}".`, { err });
+          notification.error(`Unable to save metric "${metric.id}".`, { err });
           throw err;
         })
-        .then((munin) => api.request({
-          path: `/metric/${munin.id}`,
+        .then((metric) => api.request({
+          path: `/metric/${metric.id}`,
         }))
         .catch((err) => {
-          notification.error(`Unable to retrieve the metric "${munin.id}".`, { err });
+          notification.error(`Unable to retrieve the metric "${metric.id}".`, { err });
           throw err;
         }),
     }),
@@ -99,11 +99,11 @@ import AutoForm from '@stackstorm/module-auto-form';
     ...props,
     ...state,
     ...dispatch,
-    onSave: (munin) => dispatch.onSave(munin),
+    onSave: (metric) => dispatch.onSave(metric),
     onDelete: () => dispatch.onDelete(props.id),
   })
 )
-export default class MuninDetails extends React.Component {
+export default class MetricDetails extends React.Component {
   static propTypes = {
     onComponentUpdate: PropTypes.func,
 
@@ -113,14 +113,13 @@ export default class MuninDetails extends React.Component {
 
     id: PropTypes.number,
     section: PropTypes.string,
-    munin: PropTypes.object,
-    muninSpec: PropTypes.object,
+    metric: PropTypes.object
 
   }
 
   state = {
     editing: null,
-    muninPreview: false,
+    metricPreview: false,
   }
 
   componentDidMount() {
@@ -140,8 +139,8 @@ export default class MuninDetails extends React.Component {
   }
 
   handleSection(section) {
-    const { munin } = this.props;
-    return this.props.onNavigate({ id: munin.id, section });
+    const { metric } = this.props;
+    return this.props.onNavigate({ id: metric.id, section });
   }
 
   handleChange(path, value) {
@@ -180,12 +179,12 @@ export default class MuninDetails extends React.Component {
 
   handleEdit(e) {
     e && e.preventDefault();
-    this.setState({ editing: this.props.munin });
+    this.setState({ editing: this.props.metric });
   }
 
   handleCancel(e) {
     e && e.preventDefault();
-    this.setState({ editing: null, muninPreview: false });
+    this.setState({ editing: null,  metricPreview: false });
   }
 
   handleSave(e) {
@@ -193,14 +192,14 @@ export default class MuninDetails extends React.Component {
 
     return this.props.onSave(this.state.editing)
       .then(() => {
-        this.setState({ editing: null, muninPreview: false });
+        this.setState({ editing: null, metricPreview: false });
       });
   }
 
   handleDelete(e) {
     e && e.preventDefault();
 
-    if (!window.confirm(`Do you really want to delete metric "${this.props.munin.id}"?`)) {
+    if (!window.confirm(`Do you really want to delete metric "${this.props.metric.id}"?`)) {
       return undefined;
     }
 
@@ -208,34 +207,27 @@ export default class MuninDetails extends React.Component {
   }
 
   handleToggleRunPreview() {
-    let { muninPreview } = this.state;
+    let { metricPreview } = this.state;
 
-    muninPreview = !muninPreview;
+    metricPreview = !metricPreview;
 
-    this.setState({ muninPreview });
+    this.setState({ metricPreview });
   }
 
   render() {
+    const metric = this.props.metric;
 
-
-    const {
-      muninSpec,
-    } = this.props;
-
-
-    const munin = this.props.munin;
-
-    if (!munin) {
+    if (!metric) {
       return false;
     }
 
-    setTitle([ munin.name, 'Munin' ]);
+    setTitle([ metric.name, 'Metric' ]);
 
     return (
       <PanelDetails data-test="details">
         <DetailsHeader
-          title={( <Link to={`/metric/${munin.id}`}>{munin.name}</Link> )}
-          subtitle={munin.name}
+          title={( <Link to={`/metric/${metric.id}`}>{metric.name}</Link> )}
+          subtitle={metric.name}
         />
         <DetailsToolbar>
             <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
@@ -269,7 +261,7 @@ export default class MuninDetails extends React.Component {
                     },
                     },
                   }}
-                  data={munin}
+                  data={metric}
                   onChange={(meta) => this.handleChange(null, meta)}
                 />
 

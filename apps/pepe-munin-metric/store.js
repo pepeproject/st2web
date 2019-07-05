@@ -17,15 +17,14 @@ import { createScopedStore } from '@stackstorm/module-store';
 
 import flexTableReducer from '@stackstorm/module-flex-table/flex-table.reducer';
 
-const muninReducer = (state = {}, input) => {
+const metricReducer = (state = {}, input) => {
   let {
-    munins = [],
     groups = null,
+    metrics = [],
+    metric = undefined,
     filter = '',
-    munin = undefined,
     projects = [],
     project = undefined,
-    muninSpec = undefined,
     projectsSpec = undefined,
     connections = [],
     connectionsSpec = undefined,
@@ -33,12 +32,11 @@ const muninReducer = (state = {}, input) => {
 
   state = {
     ...state,
-    munins,
     groups,
+    metrics,
+    metric,
     filter,
-    munin,
     projects,
-    muninSpec,
     projectsSpec,
     project,
     connections,
@@ -49,38 +47,8 @@ const muninReducer = (state = {}, input) => {
     case 'FETCH_GROUPS': {
       switch(input.status) {
         case 'success':
-          munins = input.payload._embedded.metric;
-
-          muninSpec = {
-            name: 'munin',
-            required: true,
-            default: 'default',
-            enum: _.map(munins, (munin) => ({
-              name: munin.name,
-              description: munin.query,
-              spec: {
-                type: 'object',
-                properties: {
-                  name: {
-                    type: 'string',
-                    required: true,
-                    pattern: '^[\\w.-]+$',
-                  },
-                  value: {
-                    type: 'string',
-                    required: true,
-                  },
-                  uri_conenction: {
-                    type: 'string',
-                    required: true,
-                  },
-                },
-              },
-            })),
-          };
-
-
-          groups = makeGroups(munins, filter);
+          metrics = input.payload._embedded.metric;
+          groups = makeGroups(metrics, filter);
           break;
         case 'error':
           break;
@@ -90,16 +58,16 @@ const muninReducer = (state = {}, input) => {
 
       return {
         ...state,
-        munins,
+        metrics,
         groups,
-        munin,
+        metric,
       };
     }
 
     case 'FETCH_METRIC': {
       switch(input.status) {
         case 'success':
-          munin = input.payload;
+          metric = input.payload;
           break;
         case 'error':
           break;
@@ -109,7 +77,7 @@ const muninReducer = (state = {}, input) => {
 
       return {
         ...state,
-        munin,
+        metric,
       };
     }
 
@@ -171,18 +139,18 @@ const muninReducer = (state = {}, input) => {
     case 'EDIT_METRIC': {
       switch(input.status) {
         case 'success':
-          munin = input.payload;
+          metric = input.payload;
 
-          munins = [ ...munins ];
-          for (const index in munins) {
-            if (munins[index].id !== munin.id) {
+          metrics = [ ...metrics ];
+          for (const index in metrics) {
+            if (metrics[index].id !== metric.id) {
               continue;
             }
 
-            munins[index] = munin;
+            metrics[index] = metric;
           }
 
-          groups = makeGroups(munins, filter);
+          groups = makeGroups(metrics, filter);
           break;
         case 'error':
           break;
@@ -192,8 +160,8 @@ const muninReducer = (state = {}, input) => {
 
       return {
         ...state,
-        munin,
-        munins,
+        metric,
+        metrics,
         groups,
       };
     }
@@ -201,9 +169,9 @@ const muninReducer = (state = {}, input) => {
     case 'CREATE_METRIC': {
       switch(input.status) {
         case 'success':
-          munin = input.payload;
-          munins = [ ...munins, munin ];
-          groups = makeGroups(munins, filter);
+          metric = input.payload;
+          metrics = [ ...metrics, metric ];
+          groups = makeGroups(metrics, filter);
           break;
         case 'error':
           break;
@@ -213,8 +181,8 @@ const muninReducer = (state = {}, input) => {
 
       return {
         ...state,
-        munin,
-        munins,
+        metric,
+        metrics,
         groups,
       };
     }
@@ -223,8 +191,8 @@ const muninReducer = (state = {}, input) => {
       const { id} = input;
       switch(input.status) {
         case 'success':
-          munins = [ ...munins ].filter(munin => munin.id != id);
-          groups = makeGroups(munins, filter);
+          metrics = [ ...metrics ].filter(metric => metric.id != id);
+          groups = makeGroups(metrics, filter);
           break;
         case 'error':
           break;
@@ -234,14 +202,14 @@ const muninReducer = (state = {}, input) => {
 
       return {
         ...state,
-        munins,
+        metrics,
         groups,
       };
     }
 
     case 'SET_FILTER': {
       filter = input.filter;
-      groups = makeGroups(munins, filter);
+      groups = makeGroups(metrics, filter);
 
       return {
         ...state,
@@ -255,24 +223,24 @@ const muninReducer = (state = {}, input) => {
   }
 };
 
-const reducer = (state = {}, munin) => {
-  state = flexTableReducer(state, munin);
-  state = muninReducer(state, munin);
+const reducer = (state = {}, metric) => {
+  state = flexTableReducer(state, metric);
+  state = metricReducer(state, metric);
 
   return state;
 };
 
-const store = createScopedStore('munin', reducer);
+const store = createScopedStore('metric', reducer);
 
 export default store;
 
-function makeGroups(munins, filter) {
-  const groups = _(munins)
+function makeGroups(metrics, filter) {
+  const groups = _(metrics)
     .filter(({ name }) => name.toLowerCase().indexOf(filter.toLowerCase()) > -1)
     .sortBy('name')
     .groupBy('project.name')
     .value()
   ;
 
-  return Object.keys(groups).map((project) => ({ project, munins: groups[project] }));
+  return Object.keys(groups).map((project) => ({ project, metrics: groups[project] }));
 }

@@ -16,9 +16,9 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import cx from 'classnames';
 
-export default class MuninFlexCard extends React.Component {
+export default class MetricFlexCard extends React.Component {
   static propTypes = {
-    munin: PropTypes.object.isRequired,
+    metric: PropTypes.object.isRequired,
     selected: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
   }
@@ -32,7 +32,7 @@ export default class MuninFlexCard extends React.Component {
   }
 
   render() {
-    const { munin, selected, onClick } = this.props;
+    const { metric, selected, onClick } = this.props;
 
     return (
       <div
@@ -40,13 +40,13 @@ export default class MuninFlexCard extends React.Component {
           'st2-flex-card--active': selected,
         })}
         onClick={onClick}
-        data-test={`munin munin:${munin}`}
+        data-test={`metric metric:${metric}`}
         ref={selected ? this.context.scrollIntoView : null}
       >
         <div className="st2-flex-card__header">
           <div className="st2-flex-card__column">
-            <div className="st2-flex-card__header-primary" title={munin.name}>
-              { munin.name }
+            <div className="st2-flex-card__header-primary" title={metric.name}>
+              { metric.name }
             </div>
             <div className="st2-flex-card__header-secondary">
 

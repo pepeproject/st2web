@@ -39,9 +39,9 @@ import {
   ContentEmpty,
   ToggleButton,
 } from '@stackstorm/module-panel';
-import MuninFlexCard from './munin-flex-card.component';
-import MuninDetails from './munin-details.component';
-import MuninPopup from './munin-popup.component';
+import MetricFlexCard from './metric-flex-card.component';
+import MetricDetails from './metric-details.component';
+import MetricPopup from './metric-popup.component';
 
 import router from '@stackstorm/module-router';
 
@@ -68,11 +68,11 @@ class FlexTableWrapper extends FlexTable {
 }
 
 @connect(({
-  munin, groups, filter, collapsed,
+  metric, groups, filter, collapsed,
 }) => ({
-  munin, groups, filter, collapsed,
+  metric, groups, filter, collapsed,
 }))
-export default class MuninPanel extends React.Component {
+export default class MetricPanel extends React.Component {
   static propTypes = {
     location: PropTypes.shape({
       search: PropTypes.string,
@@ -119,14 +119,14 @@ export default class MuninPanel extends React.Component {
         path: '/metric?projection=recursive',
       })
       .catch((err) => {
-        notification.error('Unable to retrieve munin.', { err });
+        notification.error('Unable to retrieve metrics.', { err });
         throw err;
       }),
     })
       .then(() => {
         const { id } = this.urlParams;
         const { groups } = this.props;
-        if (id && id !== 'new' && groups && !groups.some(({ munins }) => munins.some(({ id }) => id === id))) {
+        if (id && id !== 'new' && groups && !groups.some(({ metrics }) => metrics.some(({ id }) => id === id))) {
           this.navigate({ id: false });
         }
       })
@@ -135,7 +135,7 @@ export default class MuninPanel extends React.Component {
 
   get urlParams() {
     const {
-      ref = get('groups[0].munins[0].id', this.props),
+      ref = get('groups[0].metrics[0].id', this.props),
       section = 'general',
     } = this.props.match.params;
 
@@ -200,11 +200,11 @@ export default class MuninPanel extends React.Component {
     setTitle([ 'Metric' ]);
 
     return (
-      <Panel data-test="munin_panel" detailed>
-        <PanelView className="pepe-munin">
+      <Panel data-test="metric_panel" detailed>
+        <PanelView className="pepe-munin-metric">
           <ToolbarActions>
             <ToolbarButton onClick={() => this.handleCreatePopup()}>
-              <i className="icon-plus" data-test="munin_create_button" />
+              <i className="icon-plus" data-test="metric_create_button" />
             </ToolbarButton>
           </ToolbarActions>
           <Toolbar title="Metric">
@@ -216,14 +216,14 @@ export default class MuninPanel extends React.Component {
             />
           </Toolbar>
           <Content>
-            { groups && groups.map(({ project, munins }) => {
+            { groups && groups.map(({ project, metrics }) => {
               return (
                 <FlexTableWrapper key={project} title={project} uid={project}>
-                  { munins.map((munin) => (
-                    <MuninFlexCard
-                      key={munin.id} munin={munin}
-                      selected={id === munin.id}
-                      onClick={() => this.handleSelect(munin.id)}
+                  { metrics.map((metric) => (
+                    <MetricFlexCard
+                      key={metric.id} metric={metric}
+                      selected={id === metric.id}
+                      onClick={() => this.handleSelect(metric.id)}
                     />
                   )) }
                 </FlexTableWrapper>
@@ -237,7 +237,7 @@ export default class MuninPanel extends React.Component {
           </Content>
         </PanelView>
 
-        <MuninDetails
+        <MetricDetails
           ref={(ref) => this._details = ref}
           onNavigate={(...args) => this.navigate(...args)}
 
@@ -246,7 +246,7 @@ export default class MuninPanel extends React.Component {
         />
 
         { id === 'new' ? (
-          <MuninPopup
+          <MetricPopup
             onNavigate={(...args) => this.navigate(...args)}
           />
         ) : null }

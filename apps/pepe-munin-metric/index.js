@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Munin from './munin.component';
+import Metric from './metric.component';
 
 const route = {
   title: 'Metric',
   url: '/metric',
   icon: 'icon-book-closed',
-  Component: Munin,
+  Component: Metric,
   position: 3,
 };
 

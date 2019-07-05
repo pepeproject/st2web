@@ -40,21 +40,21 @@ import Popup from '@stackstorm/module-popup';
     projectsSpec, connectionsSpec,
   }),
   (dispatch, props) => ({
-    onSubmit: (munin) => dispatch({
+    onSubmit: (metric) => dispatch({
       type: 'CREATE_METRIC',
       promise: api.request({
         method: 'post',
         path: '/metric',
-      }, munin)
-        .then((munin) => {
-          notification.success(`Metric "${munin.name}" has been created successfully.`);
+      }, metric)
+        .then((metric) => {
+          notification.success(`Metric "${metric.name}" has been created successfully.`);
 
           props.onNavigate({
-            id: munin.id,
+            id: metric.id,
             section: 'general',
           });
 
-          return munin;
+          return metric;
         })
         .catch((err) => {
           notification.error('Unable to create metric.', { err });
@@ -64,7 +64,7 @@ import Popup from '@stackstorm/module-popup';
     onCancel: () => props.onNavigate({ id: false }),
   })
 )
-export default class MuninPopup extends React.Component {
+export default class MetricPopup extends React.Component {
   static propTypes = {
     projectsSpec: PropTypes.object,
     connectionsSpec: PropTypes.object,
@@ -139,7 +139,7 @@ export default class MuninPopup extends React.Component {
 
     return (
       <div className="st2-rerun">
-        <Popup title="Create a metric" onCancel={() => onCancel()} data-test="munin_create_popup">
+        <Popup title="Create a metric" onCancel={() => onCancel()} data-test="metric_create_popup">
           <form>
             <DetailsPanel>
               <DetailsPanelBody>
@@ -191,7 +191,7 @@ export default class MuninPopup extends React.Component {
                   className="st2-details__toolbar-button"
                   value="Create"
                   onClick={(e) => this.handleSubmit(e)}
-                  data-test="munin_create_submit"
+                  data-test="metric_create_submit"
                 />
               </DetailsButtonsPanel>
             </DetailsPanel>

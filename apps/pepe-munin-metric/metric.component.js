@@ -20,9 +20,9 @@ import { Route } from '@stackstorm/module-router';
 import store from './store';
 
 import Menu from '@stackstorm/module-menu';
-import MuninPanel from './munin-panel.component';
+import MetricPanel from './metric-panel.component';
 
-export default class Munin extends React.Component {
+export default class Metric extends React.Component {
   static propTypes = {
     routes: PropTypes.arrayOf(PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -42,7 +42,7 @@ export default class Munin extends React.Component {
             <Provider store={store}>
               <div className="wrapper">
                 <Menu location={location} routes={this.props.routes} />
-                <MuninPanel routes={this.props.routes} location={location} match={match} />
+                <MetricPanel routes={this.props.routes} location={location} match={match} />
               </div>
             </Provider>
           );
