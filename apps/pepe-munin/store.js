@@ -117,6 +117,8 @@ const muninReducer = (state = {}, input) => {
       switch(input.status) {
         case 'success':
           projects = input.payload._embedded.project;
+
+          projects = [{'id': '#', 'name': 'Select one project'}, ...projects];
           projectsSpec = {
             name: 'project',
             required: true,
@@ -142,6 +144,8 @@ const muninReducer = (state = {}, input) => {
       switch(input.status) {
         case 'success':
           connections = input.payload._embedded.connection;
+
+          connections = [{'id': '#', 'name': 'Select one connection'}, ...connections];
           connectionsSpec = {
             name: 'connection',
             required: true,
