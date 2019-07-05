@@ -216,13 +216,10 @@ const muninReducer = (state = {}, input) => {
     }
 
     case 'DELETE_METRIC': {
-      const { id } = input;
-
+      const { id} = input;
       switch(input.status) {
         case 'success':
-          munins = [ ...munins ]
-            .filter(munin => munin.id !== id)
-          ;
+          munins = [ ...munins ].filter(munin => munin.id != id);
           groups = makeGroups(munins, filter);
           break;
         case 'error':
