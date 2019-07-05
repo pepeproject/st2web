@@ -126,7 +126,7 @@ export default class MuninPanel extends React.Component {
       .then(() => {
         const { id } = this.urlParams;
         const { groups } = this.props;
-        if (id && id !== 'new' && groups && !groups.some(({ munin }) => munin.some(({ ref }) => ref === id))) {
+        if (id && id !== 'new' && groups && !groups.some(({ munins }) => munins.some(({ id }) => id === id))) {
           this.navigate({ id: false });
         }
       })
@@ -135,7 +135,7 @@ export default class MuninPanel extends React.Component {
 
   get urlParams() {
     const {
-      ref = get('queries[0].query[0].name', this.props),
+      ref = get('groups[0].munins[0].id', this.props),
       section = 'general',
     } = this.props.match.params;
 
