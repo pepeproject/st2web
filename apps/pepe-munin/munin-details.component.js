@@ -111,7 +111,7 @@ export default class MuninDetails extends React.Component {
     onSave: PropTypes.func,
     onDelete: PropTypes.func,
 
-    id: PropTypes.string,
+    id: PropTypes.number,
     section: PropTypes.string,
     munin: PropTypes.object,
     muninSpec: PropTypes.object,
@@ -235,7 +235,7 @@ export default class MuninDetails extends React.Component {
       <PanelDetails data-test="details">
         <DetailsHeader
           title={( <Link to={`/metric/${munin.id}`}>{munin.name}</Link> )}
-          subtitle={munin.connection.name}
+          subtitle={munin.name}
         />
         <DetailsToolbar>
             <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />

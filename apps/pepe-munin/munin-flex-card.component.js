@@ -49,7 +49,7 @@ export default class MuninFlexCard extends React.Component {
               { munin.name }
             </div>
             <div className="st2-flex-card__header-secondary">
-              Connection: { munin.connection.name }
+
             </div>
           </div>
         </div>
