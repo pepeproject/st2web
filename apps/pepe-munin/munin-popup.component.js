@@ -33,8 +33,6 @@ import {
 
 import Popup from '@stackstorm/module-popup';
 
-const emptySpec = { enum: [] };
-
 @connect(
   ({
     projectsSpec, connectionsSpec,
@@ -43,7 +41,7 @@ const emptySpec = { enum: [] };
   }),
   (dispatch, props) => ({
     onSubmit: (munin) => dispatch({
-      type: 'CREATE_QUERY',
+      type: 'CREATE_METRIC',
       promise: api.request({
         method: 'post',
         path: '/metric',
@@ -137,11 +135,11 @@ export default class MuninPopup extends React.Component {
     const {projectsSpec, connectionsSpec, onCancel } = this.props;
     const payload = this.state.payload;
 
-    setTitle([ 'Create', 'Query' ]);
+    setTitle([ 'Create', 'Metric' ]);
 
     return (
       <div className="st2-rerun">
-        <Popup title="Create a query" onCancel={() => onCancel()} data-test="munin_create_popup">
+        <Popup title="Create a metric" onCancel={() => onCancel()} data-test="munin_create_popup">
           <form>
             <DetailsPanel>
               <DetailsPanelBody>

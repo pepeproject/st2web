@@ -96,7 +96,7 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'FETCH_QUERY': {
+    case 'FETCH_METRIC': {
       switch(input.status) {
         case 'success':
           munin = input.payload;
@@ -164,7 +164,7 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'EDIT_QUERY': {
+    case 'EDIT_METRIC': {
       switch(input.status) {
         case 'success':
           munin = input.payload;
@@ -194,7 +194,7 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'CREATE_QUERY': {
+    case 'CREATE_METRIC': {
       switch(input.status) {
         case 'success':
           munin = input.payload;

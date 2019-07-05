@@ -197,7 +197,7 @@ export default class MuninPanel extends React.Component {
     const { groups, filter, collapsed } = this.props;
     const { id, section } = this.urlParams;
 
-    setTitle([ 'Munin' ]);
+    setTitle([ 'Metric' ]);
 
     return (
       <Panel data-test="munin_panel" detailed>
@@ -207,7 +207,7 @@ export default class MuninPanel extends React.Component {
               <i className="icon-plus" data-test="munin_create_button" />
             </ToolbarButton>
           </ToolbarActions>
-          <Toolbar title="Munin">
+          <Toolbar title="Metric">
             <ToggleButton collapsed={collapsed} onClick={() => this.handleToggleAll()} />
             <ToolbarSearch
               title="Filter"

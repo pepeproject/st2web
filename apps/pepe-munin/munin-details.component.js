@@ -21,7 +21,6 @@ import notification from '@stackstorm/module-notification';
 import setTitle from '@stackstorm/module-title';
 
 import { Link } from '@stackstorm/module-router';
-import RemoteForm from '@stackstorm/module-remote-form';
 
 import Button from '@stackstorm/module-forms/button.component';
 import {
@@ -30,52 +29,49 @@ import {
   DetailsBody,
   DetailsPanel,
   DetailsToolbar,
-  DetailsToolbarSeparator, DetailsPanelBody, DetailsButtonsPanel,
+  DetailsToolbarSeparator, DetailsPanelBody,
 } from '@stackstorm/module-panel';
-import Table from '@stackstorm/app-packs/table.component';
 import AutoForm from '@stackstorm/module-auto-form';
-import AutoFormCombobox from '@stackstorm/module-auto-form/modules/combobox';
-import Popup from '@stackstorm/module-popup';
 
 @connect(({ munin, muninSpec }, props) => ({ munin, muninSpec }),
   (dispatch, props) => ({
     onComponentUpdate: () => props.id && Promise.all([
       dispatch({
-        type: 'FETCH_QUERY',
+        type: 'FETCH_METRIC',
         promise: api.request({
           path: `/metric/${props.id}?projection=recursive`,
         })
           .catch((err) => {
-            notification.error(`Unable to retrieve the munin "${props.id}".`, { err });
+            notification.error(`Unable to retrieve the metric "${props.id}".`, { err });
             throw err;
           }),
       }),
     ]),
     onSave: (munin) => dispatch({
-      type: 'EDIT_RULE',
+      type: 'EDIT_METRIC',
       promise: api.request({
         method: 'put',
-        path: `/rules/${munin.id}`,
+        path: `/metric/${munin.id}`,
       }, munin)
         .then((munin) => {
-          notification.success(`Munin "${munin.ref}" has been saved successfully.`);
+          notification.success(`Metric "${munin.id}" has been saved successfully.`);
 
           props.onNavigate({
-            id: munin.ref,
+            id: munin.id,
             section: 'general',
           });
 
           return munin;
         })
         .catch((err) => {
-          notification.error(`Unable to save munin "${munin.ref}".`, { err });
+          notification.error(`Unable to save metric "${munin.id}".`, { err });
           throw err;
         })
         .then((munin) => api.request({
-          path: `/rules/views/${munin.ref}`,
+          path: `/metric/${munin.id}`,
         }))
         .catch((err) => {
-          notification.error(`Unable to retrieve the munin "${munin.ref}".`, { err });
+          notification.error(`Unable to retrieve the metric "${munin.id}".`, { err });
           throw err;
         }),
     }),
@@ -204,7 +200,7 @@ export default class MuninDetails extends React.Component {
   handleDelete(e) {
     e && e.preventDefault();
 
-    if (!window.confirm(`Do you really want to delete munin "${this.props.munin.id}"?`)) {
+    if (!window.confirm(`Do you really want to delete metric "${this.props.munin.id}"?`)) {
       return undefined;
     }
 
@@ -238,8 +234,8 @@ export default class MuninDetails extends React.Component {
     return (
       <PanelDetails data-test="details">
         <DetailsHeader
-          title={( <Link to={`/munin/${munin.id}`}>{munin.name}</Link> )}
-          subtitle={munin.value}
+          title={( <Link to={`/metric/${munin.id}`}>{munin.name}</Link> )}
+          subtitle={munin.connection.name}
         />
         <DetailsToolbar>
             <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
