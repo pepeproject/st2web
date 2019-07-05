@@ -215,13 +215,13 @@ const muninReducer = (state = {}, input) => {
       };
     }
 
-    case 'DELETE_QUERY': {
-      const { ref } = input;
+    case 'DELETE_METRIC': {
+      const { id } = input;
 
-      switch(input.status) {
+      switch(input.state) {
         case 'success':
           munins = [ ...munins ]
-            .filter(munin => munin.ref !== ref)
+            .filter(munin => munin.id !== id)
           ;
           groups = makeGroups(munins, filter);
           break;

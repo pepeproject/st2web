@@ -79,22 +79,22 @@ import Popup from '@stackstorm/module-popup';
           throw err;
         }),
     }),
-    onDelete: (ref) => dispatch({
-      type: 'DELETE_RULE',
-      ref,
+    onDelete: (id) => dispatch({
+      type: 'DELETE_METRIC',
+      id,
       promise: api.request({
         method: 'delete',
-        path: `/rules/${ref}`,
+        path: `/metric/${id}`,
       })
         .then((res) => {
-          notification.success(`Munin "${ref}" has been deleted successfully.`);
+          notification.success(`Metric "${id}" has been deleted successfully.`);
 
           props.onNavigate({ id: null });
 
           return res;
         })
         .catch((err) => {
-          notification.error(`Unable to delete munin "${ref}".`, { err });
+          notification.error(`Unable to delete metric "${id}".`, { err });
           throw err;
         }),
     }),
@@ -204,7 +204,7 @@ export default class MuninDetails extends React.Component {
   handleDelete(e) {
     e && e.preventDefault();
 
-    if (!window.confirm(`Do you really want to delete munin "${this.props.munin.ref}"?`)) {
+    if (!window.confirm(`Do you really want to delete munin "${this.props.munin.id}"?`)) {
       return undefined;
     }
 
@@ -242,7 +242,7 @@ export default class MuninDetails extends React.Component {
           subtitle={munin.value}
         />
         <DetailsToolbar>
-            <Button flat red value="Remove" onClick={() => this.handleRemove()} />
+            <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
           <DetailsToolbarSeparator />
         </DetailsToolbar>
         <DetailsBody>
