@@ -28,6 +28,7 @@ import {
   DetailsHeader,
   DetailsBody,
   DetailsPanel,
+  DetailsPanelBodyLine,
   DetailsToolbar,
   DetailsToolbarSeparator, DetailsPanelBody,
 } from '@stackstorm/module-panel';
@@ -225,56 +226,43 @@ export default class MetricDetails extends React.Component {
 
     return (
       <PanelDetails data-test="details">
-        <DetailsHeader
-          title={( <Link to={`/metric/${metric.id}`}>{metric.name}</Link> )}
-          subtitle={metric.name}
-        />
-        <DetailsToolbar>
-            <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
-          <DetailsToolbarSeparator />
-        </DetailsToolbar>
-        <DetailsBody>
-          <form>
-            <DetailsPanel>
-              <DetailsPanelBody>
-                <AutoForm
-                  spec={{
-                    type: 'object',
-                    properties: {
-                      name: {
-                        type: 'string',
-                        required: true,
-                        pattern: '^[\\w.-]+$',
-                      },
-                      query: {
-                        type: 'string',
-                        required: true,
-                      },
-                      connection: {
-                        type: 'object',
-                        required: true,
-                      },
-                    project: {
-                      type: 'object',
-                      required: true,
+      <DetailsHeader
+        title={( <Link to={`/metric/${metric.id}`}>{metric.name}</Link> )}
+        subtitle={metric.name}
+      />
+      <DetailsToolbar>
+          <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
+        <DetailsToolbarSeparator />
+      </DetailsToolbar>
+      <DetailsBody>
+        <form>
+          <DetailsPanel>
+            <DetailsPanelBody>
 
-                    },
-                    },
-                  }}
-                  data={metric}
-                  onChange={(meta) => this.handleChange(null, meta)}
-                />
+            <DetailsPanelBodyLine label="Name">
+                 {metric.name}
+              </DetailsPanelBodyLine>
+              <DetailsPanelBodyLine label="Connection">
+       
+              </DetailsPanelBodyLine>
+              <DetailsPanelBodyLine label="Query">
+                 {metric.query}
+              </DetailsPanelBodyLine>
+              <DetailsPanelBodyLine label="Project">
+       
+              </DetailsPanelBodyLine>
 
 
 
-              </DetailsPanelBody>
-            </DetailsPanel>
-          </form>
+            </DetailsPanelBody>
+          </DetailsPanel>
+        </form>
 
 
 
-        </DetailsBody>
-      </PanelDetails>
+      </DetailsBody>
+    </PanelDetails>
+
     );
   }
 }
