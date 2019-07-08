@@ -24,7 +24,6 @@ const metricReducer = (state = {}, input) => {
     metric = undefined,
     filter = '',
     projects = [],
-    project = undefined,
     projectsSpec = undefined,
     connections = [],
     connectionsSpec = undefined,
@@ -38,7 +37,6 @@ const metricReducer = (state = {}, input) => {
     filter,
     projects,
     projectsSpec,
-    project,
     connections,
     connectionsSpec,
   };
@@ -86,7 +84,7 @@ const metricReducer = (state = {}, input) => {
         case 'success':
           projects = input.payload._embedded.project;
 
-          projects = [{'id': '#', 'name': 'Select one project'}, ...projects];
+          projects = [{'id': '#', 'name': 'Select one project'}, ...projects ];
           projectsSpec = {
             name: 'project',
             required: true,
@@ -113,7 +111,7 @@ const metricReducer = (state = {}, input) => {
         case 'success':
           connections = input.payload._embedded.connection;
 
-          connections = [{'id': '#', 'name': 'Select one connection'}, ...connections];
+          connections = [{'id': '#', 'name': 'Select one connection'}, ...connections ];
           connectionsSpec = {
             name: 'connection',
             required: true,
@@ -133,36 +131,6 @@ const metricReducer = (state = {}, input) => {
         ...state,
         connectionsSpec,
         connections,
-      };
-    }
-
-    case 'EDIT_METRIC': {
-      switch(input.status) {
-        case 'success':
-          metric = input.payload;
-
-          metrics = [ ...metrics ];
-          for (const index in metrics) {
-            if (metrics[index].id !== metric.id) {
-              continue;
-            }
-
-            metrics[index] = metric;
-          }
-
-          groups = makeGroups(metrics, filter);
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        metric,
-        metrics,
-        groups,
       };
     }
 
@@ -191,7 +159,9 @@ const metricReducer = (state = {}, input) => {
       const { id} = input;
       switch(input.status) {
         case 'success':
-          metrics = [ ...metrics ].filter(metric => metric.id != id);
+          metrics = [ ...metrics ]
+              .filter(metric => parseInt(metric.id) !== id)
+          ;
           groups = makeGroups(metrics, filter);
           break;
         case 'error':

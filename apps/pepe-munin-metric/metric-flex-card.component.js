@@ -48,9 +48,7 @@ export default class MetricFlexCard extends React.Component {
             <div className="st2-flex-card__header-primary" title={metric.name}>
               { metric.name }
             </div>
-            <div className="st2-flex-card__header-secondary">
-
-            </div>
+            <div className="st2-flex-card__header-secondary" />
           </div>
         </div>
       </div>

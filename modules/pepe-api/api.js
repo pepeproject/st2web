@@ -38,7 +38,8 @@ export class API {
       this.server = server;
       if (server_custom.pepe) {
         this.server.pepe = server_custom.pepe;
-      } else {
+      }
+      else {
         this.server.pepe = `${window.location.protocol || 'https:'}//${window.location.host}/munin`;
       }
     }
@@ -76,7 +77,7 @@ export class API {
     };
 
     if (this.token && this.token.token && this.token.user) {
-      headers['Authorization'] = `Basic ${toBase64(`${this.token.user}:${this.token.token}`)}`;
+      headers.Authorization = `Basic ${toBase64(`${this.token.user}:${this.token.token}`)}`;
     }
     
     const config = {

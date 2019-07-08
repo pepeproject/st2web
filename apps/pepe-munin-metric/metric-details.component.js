@@ -32,7 +32,6 @@ import {
   DetailsToolbar,
   DetailsToolbarSeparator, DetailsPanelBody,
 } from '@stackstorm/module-panel';
-import AutoForm from '@stackstorm/module-auto-form';
 
 @connect(({ metric }, props) => ({ metric }),
   (dispatch, props) => ({
@@ -108,19 +107,11 @@ export default class MetricDetails extends React.Component {
   static propTypes = {
     onComponentUpdate: PropTypes.func,
 
-    onNavigate: PropTypes.func.isRequired,
     onSave: PropTypes.func,
     onDelete: PropTypes.func,
 
     id: PropTypes.number,
-    section: PropTypes.string,
-    metric: PropTypes.object
-
-  }
-
-  state = {
-    editing: null,
-    metricPreview: false,
+    metric: PropTypes.object,
   }
 
   componentDidMount() {
@@ -137,11 +128,6 @@ export default class MetricDetails extends React.Component {
     }
 
     this.props.onComponentUpdate && this.props.onComponentUpdate();
-  }
-
-  handleSection(section) {
-    const { metric } = this.props;
-    return this.props.onNavigate({ id: metric.id, section });
   }
 
   handleChange(path, value) {
@@ -178,11 +164,6 @@ export default class MetricDetails extends React.Component {
     return this.setState({ editing: target });
   }
 
-  handleEdit(e) {
-    e && e.preventDefault();
-    this.setState({ editing: this.props.metric });
-  }
-
   handleCancel(e) {
     e && e.preventDefault();
     this.setState({ editing: null,  metricPreview: false });
@@ -207,14 +188,6 @@ export default class MetricDetails extends React.Component {
     return this.props.onDelete();
   }
 
-  handleToggleRunPreview() {
-    let { metricPreview } = this.state;
-
-    metricPreview = !metricPreview;
-
-    this.setState({ metricPreview });
-  }
-
   render() {
     const metric = this.props.metric;
 
@@ -226,43 +199,29 @@ export default class MetricDetails extends React.Component {
 
     return (
       <PanelDetails data-test="details">
-      <DetailsHeader
-        title={( <Link to={`/metric/${metric.id}`}>{metric.name}</Link> )}
-        subtitle={metric.name}
-      />
-      <DetailsToolbar>
-          <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
-        <DetailsToolbarSeparator />
-      </DetailsToolbar>
-      <DetailsBody>
-        <form>
-          <DetailsPanel>
-            <DetailsPanelBody>
-
-            <DetailsPanelBodyLine label="Name">
-                 {metric.name}
-              </DetailsPanelBodyLine>
-              <DetailsPanelBodyLine label="Connection">
-       
-              </DetailsPanelBodyLine>
-              <DetailsPanelBodyLine label="Query">
-                 {metric.query}
-              </DetailsPanelBodyLine>
-              <DetailsPanelBodyLine label="Project">
-       
-              </DetailsPanelBodyLine>
-
-
-
-            </DetailsPanelBody>
-          </DetailsPanel>
-        </form>
-
-
-
-      </DetailsBody>
-    </PanelDetails>
-
+        <DetailsHeader
+          title={( <Link to={`/metric/${metric.id}`}>{metric.name}</Link> )}
+          subtitle={metric.name}
+        />
+        <DetailsToolbar>
+          <Button flat red value="Delete" onClick={() => this.handleDelete()} />
+          <DetailsToolbarSeparator />
+        </DetailsToolbar>
+        <DetailsBody>
+          <form>
+            <DetailsPanel>
+              <DetailsPanelBody>
+                <DetailsPanelBodyLine label="Name">
+                  {metric.name}
+                </DetailsPanelBodyLine>
+                <DetailsPanelBodyLine label="Query">
+                  {metric.query}
+                </DetailsPanelBodyLine>
+              </DetailsPanelBody>
+            </DetailsPanel>
+          </form>
+        </DetailsBody>
+      </PanelDetails>
     );
   }
 }

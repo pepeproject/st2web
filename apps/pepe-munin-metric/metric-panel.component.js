@@ -118,10 +118,10 @@ export default class MetricPanel extends React.Component {
       promise: api.request({
         path: '/metric?projection=recursive',
       })
-      .catch((err) => {
-        notification.error('Unable to retrieve metrics.', { err });
-        throw err;
-      }),
+        .catch((err) => {
+          notification.error('Unable to retrieve metrics.', { err });
+          throw err;
+        }),
     })
       .then(() => {
         const { id } = this.urlParams;
@@ -136,16 +136,14 @@ export default class MetricPanel extends React.Component {
   get urlParams() {
     const {
       ref = get('groups[0].metrics[0].id', this.props),
-      section = 'general',
     } = this.props.match.params;
 
     return {
-      id: ref,
-      section,
+      id: parseInt(ref),
     };
   }
 
-  navigate({ id, section } = {}) {
+  navigate({ id } = {}) {
     const current = this.urlParams;
 
     if (typeof id === 'undefined') {
@@ -157,14 +155,7 @@ export default class MetricPanel extends React.Component {
       id = undefined;
     }
 
-    if (typeof section === 'undefined') {
-      section = current.section;
-    }
-    if (section === 'general') {
-      section = undefined;
-    }
-
-    const pathname = `/metric${id ? `/${id}${section ? `/${section}` : ''}` : ''}`;
+    const pathname = `/metric${id ? `/${id}` : ''}`;
 
     const { location } = this.props;
     if (location.pathname === pathname) {
@@ -195,7 +186,7 @@ export default class MetricPanel extends React.Component {
 
   render() {
     const { groups, filter, collapsed } = this.props;
-    const { id, section } = this.urlParams;
+    const { id } = this.urlParams;
 
     setTitle([ 'Metric' ]);
 
@@ -242,7 +233,6 @@ export default class MetricPanel extends React.Component {
           onNavigate={(...args) => this.navigate(...args)}
 
           id={id}
-          section={section}
         />
 
         { id === 'new' ? (
