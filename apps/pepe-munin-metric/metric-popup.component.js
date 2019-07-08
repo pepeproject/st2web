@@ -51,7 +51,6 @@ import Popup from '@stackstorm/module-popup';
 
           props.onNavigate({
             id: metric.id,
-            section: 'general',
           });
 
           return metric;
@@ -128,7 +127,7 @@ export default class MetricPopup extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-   this.props.onSubmit(this.state.payload);
+    this.props.onSubmit(this.state.payload);
   }
 
   render() {
@@ -156,7 +155,7 @@ export default class MetricPopup extends React.Component {
                         type: 'string',
                         required: true,
                       },
-                  },
+                    },
                   }}
                   data={payload}
                   onChange={(meta) => this.handleChange(null, meta)}
