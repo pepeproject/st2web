@@ -27,7 +27,7 @@ import Code from '@stackstorm/app-code';
 import Triggers from '@stackstorm/app-triggers';
 import History from '@stackstorm/app-history';
 import Rules from '@stackstorm/app-rules';
-import Munin from './apps/pepe-munin';
+import Munin from './apps/pepe-munin-metric';
 
 const routes = [
   Actions,
