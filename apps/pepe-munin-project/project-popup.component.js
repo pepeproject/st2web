@@ -54,7 +54,7 @@ import Popup from '@stackstorm/module-popup';
             section: 'general',
           });
 
-          return metric;
+          return project;
         })
         .catch((err) => {
           notification.error('Unable to create project.', { err });
@@ -126,7 +126,6 @@ export default class ProjectPopup extends React.Component {
   }
 
   handleSubmit(e) {
-    console.log(JSON.stringify(this.state.payload));
     e.preventDefault();
    this.props.onSubmit(this.state.payload);
   }
@@ -139,7 +138,7 @@ export default class ProjectPopup extends React.Component {
 
     return (
       <div className="st2-rerun">
-        <Popup title="Create a project" onCancel={() => onCancel()} data-test="metric_create_popup">
+        <Popup title="Create a project" onCancel={() => onCancel()} data-test="project_create_popup">
           <form>
             <DetailsPanel>
               <DetailsPanelBody>
@@ -207,7 +206,7 @@ export default class ProjectPopup extends React.Component {
                   className="st2-details__toolbar-button"
                   value="Create"
                   onClick={(e) => this.handleSubmit(e)}
-                  data-test="metric_create_submit"
+                  data-test="project_create_submit"
                 />
               </DetailsButtonsPanel>
             </DetailsPanel>
