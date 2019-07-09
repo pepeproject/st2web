@@ -29,6 +29,7 @@ import History from '@stackstorm/app-history';
 import Rules from '@stackstorm/app-rules';
 import MuninMetric from './apps/pepe-munin-metric';
 import MuninProject from './apps/pepe-munin-project';
+import MuninConnection from './apps/pepe-munin-connection';
 
 const routes = [
   Actions,
@@ -37,7 +38,8 @@ const routes = [
   History,
   Rules,
   MuninMetric,
-  MuninProject
+  MuninProject,
+  MuninConnection,
 ];
 
 window.fp = require('lodash/fp');
