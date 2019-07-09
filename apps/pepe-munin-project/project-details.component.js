@@ -15,11 +15,9 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
-
 import api from '../../modules/pepe-api';
 import notification from '@stackstorm/module-notification';
 import setTitle from '@stackstorm/module-title';
-
 import { Link } from '@stackstorm/module-router';
 
 import Button from '@stackstorm/module-forms/button.component';
@@ -32,7 +30,6 @@ import {
   DetailsToolbar,
   DetailsToolbarSeparator, DetailsPanelBody,
 } from '@stackstorm/module-panel';
-import AutoForm from '@stackstorm/module-auto-form';
 
 @connect(({ project }, props) => ({ project }),
   (dispatch, props) => ({
@@ -85,9 +82,7 @@ import AutoForm from '@stackstorm/module-auto-form';
       })
         .then((res) => {
           notification.success(`Project "${id}" has been deleted successfully.`);
-
           props.onNavigate({ id: null });
-
           return res;
         })
         .catch((err) => {
@@ -107,15 +102,11 @@ import AutoForm from '@stackstorm/module-auto-form';
 export default class ProjectDetails extends React.Component {
   static propTypes = {
     onComponentUpdate: PropTypes.func,
-
     onNavigate: PropTypes.func.isRequired,
     onSave: PropTypes.func,
     onDelete: PropTypes.func,
-
     id: PropTypes.number,
-    section: PropTypes.string,
-    project: PropTypes.object
-
+    project: PropTypes.object,
   }
 
   state = {
@@ -226,34 +217,29 @@ export default class ProjectDetails extends React.Component {
 
     return (
       <PanelDetails data-test="details">
-      <DetailsHeader
-        title={( <Link to={`/project/${project.id}`}>{project.name}</Link> )}
-        subtitle={project.name}
-      />
-      <DetailsToolbar>
+        <DetailsHeader
+          title={( <Link to={`/project/${project.id}`}>{project.name}</Link> )}
+          subtitle={project.name}
+        />
+        <DetailsToolbar>
           <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
-        <DetailsToolbarSeparator />
-      </DetailsToolbar>
-      <DetailsBody>
-        <form>
-          <DetailsPanel>
-            <DetailsPanelBody>
-
-            <DetailsPanelBodyLine label="Name">
-                 {project.name}
-              </DetailsPanelBodyLine>
-              <DetailsPanelBodyLine label="Keystone Login">
-                 {project.keystone.login}
-              </DetailsPanelBodyLine>
-            </DetailsPanelBody>
-          </DetailsPanel>
-        </form>
-
-
-
-      </DetailsBody>
-    </PanelDetails>
-
+          <DetailsToolbarSeparator />
+        </DetailsToolbar>
+        <DetailsBody>
+          <form>
+            <DetailsPanel>
+              <DetailsPanelBody>
+                <DetailsPanelBodyLine label="Name">
+                  {project.name}
+                </DetailsPanelBodyLine>
+                <DetailsPanelBodyLine label="Keystone Login">
+                  {project.keystone.login}
+                </DetailsPanelBodyLine>
+              </DetailsPanelBody>
+            </DetailsPanel>
+          </form>
+        </DetailsBody>
+      </PanelDetails>
     );
   }
 }

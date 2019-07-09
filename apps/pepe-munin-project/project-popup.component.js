@@ -23,8 +23,6 @@ import notification from '@stackstorm/module-notification';
 import AutoForm from '@stackstorm/module-auto-form';
 import Button from '@stackstorm/module-forms/button.component';
 
-import AutoFormSelect from '@stackstorm/module-auto-form/modules/select';
-
 import {
   DetailsPanel,
   DetailsPanelBody,
@@ -34,11 +32,6 @@ import {
 import Popup from '@stackstorm/module-popup';
 
 @connect(
-  ({
- 
-  }) => ({
-
-  }),
   (dispatch, props) => ({
     onSubmit: (project) => dispatch({
       type: 'CREATE_PROJECT',
@@ -76,7 +69,7 @@ export default class ProjectPopup extends React.Component {
       keystone: {
         login: '',
         password: '',
-      }
+      },
     },
   }
 
@@ -127,7 +120,7 @@ export default class ProjectPopup extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-   this.props.onSubmit(this.state.payload);
+    this.props.onSubmit(this.state.payload);
   }
 
   render() {
@@ -150,29 +143,28 @@ export default class ProjectPopup extends React.Component {
                         type: 'string',
                         required: true,
                         pattern: '^[\\w.-]+$',
-                      }
-                  },
+                      },
+                    },
                   }}
                   data={payload.name}
                   onChange={(meta) => this.handleChange(null, meta)}
                 />
-          
-          
-              <AutoForm
-                    spec={{
-                      type: 'object',
-                      properties: {
-                        login: {
-                          type: 'string',
-                          required: true,
-                          pattern: '^[\\w.-]+$',
-                        },  password: {
-                          type: 'string',
-                          required: true,
-                          pattern: '^[\\w.-]+$',
-                        }
+
+                <AutoForm
+                  spec={{
+                    type: 'object',
+                    properties: {
+                      login: {
+                        type: 'string',
+                        required: true,
+                        pattern: '^[\\w.-]+$',
+                      },password: {
+                        type: 'string',
+                        required: true,
+                        pattern: '^[\\w.-]+$',
+                      },
                     },
-                    }}
+                  }}
                   data={payload.keystone}
                   onChange={(meta) => this.handleChange('keystone', meta)}
                 />

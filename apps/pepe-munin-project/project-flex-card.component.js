@@ -48,9 +48,6 @@ export default class ProjectFlexCard extends React.Component {
             <div className="st2-flex-card__header-primary" title={project.name}>
               { project.name }
             </div>
-            <div className="st2-flex-card__header-secondary">
-
-            </div>
           </div>
         </div>
       </div>

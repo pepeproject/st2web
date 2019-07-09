@@ -16,9 +16,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import store from './store';
-
 import get from 'lodash/fp/get';
-
 import api from '../../modules/pepe-api';
 
 import {
@@ -27,7 +25,6 @@ import {
 import notification from '@stackstorm/module-notification';
 import setTitle from '@stackstorm/module-title';
 
-import FlexTable from '@stackstorm/module-flex-table/flex-table.component';
 import {
   Panel,
   PanelView,
@@ -59,19 +56,12 @@ import './style.css';
     onToggle: () => store.dispatch(flexActions.toggle(uid)),
   };
 })
-class FlexTableWrapper extends FlexTable {
-  componentDidMount() {
-    const { uid } = this.props;
-
-    store.dispatch(flexActions.register(uid, false));
-  }
-}
 
 
 @connect(({
-  projects, project, groups, filter, collapsed,
+  groups, projects, project, filter, collapsed,
 }) => ({
-  projects, project, groups, filter, collapsed,
+  groups, projects, project, filter, collapsed,
 }))
 export default class ProjectPanel extends React.Component {
   static propTypes = {
@@ -79,40 +69,18 @@ export default class ProjectPanel extends React.Component {
       search: PropTypes.string,
     }),
 
-    groups: PropTypes.array,
     projects: PropTypes.array,
+    groups: PropTypes.array,
     filter: PropTypes.string,
 
     collapsed: PropTypes.bool,
   }
 
   componentDidMount() {
-    //this.fetchGroups();
     this.fetchProjects();
   }
 
-  fetchGroups() {
-    return store.dispatch({
-      type: 'FETCH_GROUPS',
-      promise: api.request({
-        path: '/project',
-      })
-      .catch((err) => {
-        notification.error('Unable to retrieve projects.', { err });
-        throw err;
-      }),
-    })
-      .then(() => {
-        const { id } = this.urlParams;
-        const { groups, projects } = this.props;
-        if (id && id !== 'new' && groups && !groups.some(({ projects }) => projects.some(({ id }) => id === id))) {
-          this.navigate({ id: false });
-        }
-      })
-    ;
-  }
-
-  fetchProjects(){
+  fetchProjects() {
     store.dispatch({
       type: 'FETCH_PROJECTS',
       promise: api.request({
@@ -178,7 +146,7 @@ export default class ProjectPanel extends React.Component {
   }
 
   render() {
-    const { projects, groups, filter, collapsed } = this.props;
+    const {groups, projects, filter, collapsed } = this.props;
     const { id } = this.urlParams;
 
     setTitle([ 'Project' ]);
@@ -201,15 +169,15 @@ export default class ProjectPanel extends React.Component {
           </Toolbar>
           <Content>
       
-            { projects && projects.map((project) => (
-                <ProjectFlexCard
-                  key={project.id} project={project}
-                  selected={Number(id) === project.id}
-                  onClick={() => this.handleSelect(project.id)}
-                />
+            { groups && groups.map((project) => (
+              <ProjectFlexCard
+                key={project.id} project={project}
+                selected={Number(id) === project.id}
+                onClick={() => this.handleSelect(project.id)}
+              />
             ))}
 
-            { !projects || projects.length > 0 ? null : (
+            { !groups || groups.length > 0 ? null : (
               <ContentEmpty />
             ) }
           </Content>

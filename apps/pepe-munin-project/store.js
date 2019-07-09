@@ -19,7 +19,7 @@ import flexTableReducer from '@stackstorm/module-flex-table/flex-table.reducer';
 
 const projectReducer = (state = {}, input) => {
   let {
-    groups = null,
+    groups = [],
     projects = [],
     project = undefined,
     filter = '',
@@ -85,7 +85,8 @@ const projectReducer = (state = {}, input) => {
     case 'FETCH_PROJECTS': {
       switch(input.status) {
         case 'success':
-          projects = input.payload._embedded.project;   
+          projects = input.payload._embedded.project;
+          groups = makeGroups(projects, filter);
           break;
         case 'error':
           break;
@@ -95,6 +96,7 @@ const projectReducer = (state = {}, input) => {
       return {
         ...state,
         projects,
+        groups,
       };
     }
 
@@ -141,13 +143,13 @@ const projectReducer = (state = {}, input) => {
 
     case 'SET_FILTER': {
       filter = input.filter;
-      projects = makeGroups(projects, filter);
+      groups = makeGroups(projects, filter);
 
       return {
         ...state,
-        groups,
         projects,
         filter,
+        groups,
       };
     }
 
