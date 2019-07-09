@@ -17,9 +17,9 @@ import Metric from './metric.component';
 const route = {
   title: 'Metric',
   url: '/metric',
-  icon: 'icon-book-closed',
+  icon: 'icon-bars',
   Component: Metric,
-  position: 3,
+  position: 7,
 };
 
 export default route;
