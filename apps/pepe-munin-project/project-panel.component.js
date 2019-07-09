@@ -184,11 +184,11 @@ export default class ProjectPanel extends React.Component {
     setTitle([ 'Project' ]);
 
     return (
-      <Panel data-test="metric_panel" detailed>
-        <PanelView className="pepe-munin-metric">
+      <Panel data-test="project_panel" detailed>
+        <PanelView className="pepe-munin-project">
           <ToolbarActions>
             <ToolbarButton onClick={() => this.handleCreatePopup()}>
-              <i className="icon-plus" data-test="metric_create_button" />
+              <i className="icon-plus" data-test="project_create_button" />
             </ToolbarButton>
           </ToolbarActions>
           <Toolbar title="Project">
