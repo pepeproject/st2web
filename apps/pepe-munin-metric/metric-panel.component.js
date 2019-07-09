@@ -139,7 +139,7 @@ export default class MetricPanel extends React.Component {
     } = this.props.match.params;
 
     return {
-      id: parseInt(ref),
+      id: ref,
     };
   }
 
@@ -213,7 +213,7 @@ export default class MetricPanel extends React.Component {
                   { metrics.map((metric) => (
                     <MetricFlexCard
                       key={metric.id} metric={metric}
-                      selected={id === metric.id}
+                      selected={Number(id) === metric.id}
                       onClick={() => this.handleSelect(metric.id)}
                     />
                   )) }
@@ -232,7 +232,7 @@ export default class MetricPanel extends React.Component {
           ref={(ref) => this._details = ref}
           onNavigate={(...args) => this.navigate(...args)}
 
-          id={id}
+          id={Number(id)}
         />
 
         { id === 'new' ? (
