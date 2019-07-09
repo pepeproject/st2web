@@ -69,9 +69,9 @@ class FlexTableWrapper extends FlexTable {
 
 
 @connect(({
-  project, groups, filter, collapsed,
+  projects, project, groups, filter, collapsed,
 }) => ({
-  project, groups, filter, collapsed,
+  projects, project, groups, filter, collapsed,
 }))
 export default class ProjectPanel extends React.Component {
   static propTypes = {
@@ -80,13 +80,15 @@ export default class ProjectPanel extends React.Component {
     }),
 
     groups: PropTypes.array,
+    projects: PropTypes.array,
     filter: PropTypes.string,
 
     collapsed: PropTypes.bool,
   }
 
   componentDidMount() {
-    this.fetchGroups();
+    //this.fetchGroups();
+    this.fetchProjects();
   }
 
   fetchGroups() {
@@ -102,12 +104,25 @@ export default class ProjectPanel extends React.Component {
     })
       .then(() => {
         const { id } = this.urlParams;
-        const { groups } = this.props;
+        const { groups, projects } = this.props;
         if (id && id !== 'new' && groups && !groups.some(({ projects }) => projects.some(({ id }) => id === id))) {
           this.navigate({ id: false });
         }
       })
     ;
+  }
+
+  fetchProjects(){
+    store.dispatch({
+      type: 'FETCH_PROJECTS',
+      promise: api.request({
+        path: '/project?projection=recursive',
+      })
+        .catch((err) => {
+          notification.error('Unable to retrieve project spec.', { err });
+          throw err;
+        }),
+    });
   }
 
   get urlParams() {
@@ -172,7 +187,7 @@ export default class ProjectPanel extends React.Component {
   }
 
   render() {
-    const { groups, filter, collapsed } = this.props;
+    const { projects, groups, filter, collapsed } = this.props;
     const { id, section } = this.urlParams;
 
     setTitle([ 'Project' ]);
@@ -194,22 +209,18 @@ export default class ProjectPanel extends React.Component {
             />
           </Toolbar>
           <Content>
-            { groups && groups.map(({ project, projects }) => {
-              return (
-                <FlexTableWrapper key={project} title={project} uid={project}>
-                  { projects.map((project) => (
-                    <ProjectFlexCard
-                      key={project.id} project={project}
-                      selected={id === project.id}
-                      onClick={() => this.handleSelect(project.id)}
-                    />
-                  )) }
-                </FlexTableWrapper>
-              );
-              
-            }) }
+      
+            {
+             projects.map((project) => (
+                  <ProjectFlexCard
+                  key={project.id} project={project}
+                  selected={id === project.id}
+                  onClick={() => this.handleSelect(project.id)}
+                />
+            ))}
+     
 
-            { !groups || groups.length > 0 ? null : (
+            { !projects || projects.length > 0 ? null : (
               <ContentEmpty />
             ) }
           </Content>

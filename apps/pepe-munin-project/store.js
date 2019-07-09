@@ -102,6 +102,23 @@ const projectReducer = (state = {}, input) => {
       };
     }
 
+
+    case 'FETCH_PROJECTS': {
+      switch(input.status) {
+        case 'success':
+          projects = input.payload._embedded.project;   
+          break;
+        case 'error':
+          break;
+        default:
+          break;
+      }
+      return {
+        ...state,
+        projects,
+      };
+    }
+
     case 'CREATE_PROJECT': {
       switch(input.status) {
         case 'success':
