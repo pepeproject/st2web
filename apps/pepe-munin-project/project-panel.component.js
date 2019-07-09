@@ -128,17 +128,15 @@ export default class ProjectPanel extends React.Component {
   get urlParams() {
     const {
       ref = get('projects[0].id', this.props),
-      section = 'general',
     } = this.props.match.params;
 
     return {
-      id: parseInt(ref),
-      section,
+      id: ref,
     };
   }
 
 
-  navigate({ id, section } = {}) {
+  navigate({ id } = {}) {
     const current = this.urlParams;
 
     if (typeof id === 'undefined') {
@@ -150,14 +148,7 @@ export default class ProjectPanel extends React.Component {
       id = undefined;
     }
 
-    if (typeof section === 'undefined') {
-      section = current.section;
-    }
-    if (section === 'general') {
-      section = undefined;
-    }
-
-    const pathname = `/project${id ? `/${id}${section ? `/${section}` : ''}` : ''}`;
+    const pathname = `/project${id ? `/${id}` : ''}`;
 
     const { location } = this.props;
     if (location.pathname === pathname) {
@@ -188,7 +179,7 @@ export default class ProjectPanel extends React.Component {
 
   render() {
     const { projects, groups, filter, collapsed } = this.props;
-    const { id, section } = this.urlParams;
+    const { id } = this.urlParams;
 
     setTitle([ 'Project' ]);
 
@@ -210,15 +201,13 @@ export default class ProjectPanel extends React.Component {
           </Toolbar>
           <Content>
       
-            {
-             projects.map((project) => (
-                  <ProjectFlexCard
+            { projects && projects.map((project) => (
+                <ProjectFlexCard
                   key={project.id} project={project}
-                  selected={id === project.id}
+                  selected={Number(id) === project.id}
                   onClick={() => this.handleSelect(project.id)}
                 />
             ))}
-     
 
             { !projects || projects.length > 0 ? null : (
               <ContentEmpty />
@@ -230,8 +219,7 @@ export default class ProjectPanel extends React.Component {
           ref={(ref) => this._details = ref}
           onNavigate={(...args) => this.navigate(...args)}
 
-          id={id}
-          section={section}
+          id={Number(id)}
         />
 
         { id === 'new' ? (

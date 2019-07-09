@@ -31,7 +31,6 @@ const projectReducer = (state = {}, input) => {
     projects,
     project,
     filter,
-    project,
   };
 
   switch (input.type) {
