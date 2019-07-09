@@ -17,9 +17,9 @@ import Project from './project.component';
 const route = {
   title: 'Project',
   url: '/project',
-  icon: 'icon-book-closed',
+  icon: 'icon-grid',
   Component: Project,
-  position: 3,
+  position: 5,
 };
 
 export default route;

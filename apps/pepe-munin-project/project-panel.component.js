@@ -117,10 +117,11 @@ export default class ProjectPanel extends React.Component {
     } = this.props.match.params;
 
     return {
-      id: ref,
+      id: parseInt(ref),
       section,
     };
   }
+
 
   navigate({ id, section } = {}) {
     const current = this.urlParams;
