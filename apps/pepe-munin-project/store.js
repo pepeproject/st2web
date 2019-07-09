@@ -171,9 +171,8 @@ function makeGroups(projects, filter) {
   const groups = _(projects)
     .filter(({ name }) => name.toLowerCase().indexOf(filter.toLowerCase()) > -1)
     .sortBy('name')
-    .groupBy('name')
     .value()
   ;
 
-  return Object.keys(groups).map((project) => ({ project, projects: groups[project] }));
+  return groups;
 }

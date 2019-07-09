@@ -35,9 +35,9 @@ import Popup from '@stackstorm/module-popup';
 
 @connect(
   ({
-    projectsSpec, connectionsSpec,
+ 
   }) => ({
-    projectsSpec, connectionsSpec,
+
   }),
   (dispatch, props) => ({
     onSubmit: (project) => dispatch({
@@ -131,7 +131,7 @@ export default class ProjectPopup extends React.Component {
   }
 
   render() {
-    const {projectsSpec, connectionsSpec, onCancel } = this.props;
+    const {onCancel } = this.props;
     const payload = this.state.payload;
 
     setTitle([ 'Create', 'Project' ]);
@@ -166,30 +166,17 @@ export default class ProjectPopup extends React.Component {
                           type: 'string',
                           required: true,
                           pattern: '^[\\w.-]+$',
+                        },  password: {
+                          type: 'string',
+                          required: true,
+                          pattern: '^[\\w.-]+$',
                         }
                     },
                     }}
-                  data={payload.keystone.login}
-                  onChange={(meta) => this.handleChange('keystone', meta)}
-                />
-             
-
-             <AutoForm
-                   spec={{
-                    type: 'object',
-                    properties: {
-                      password: {
-                        type: 'string',
-                        required: true,
-                        pattern: '^[\\w.-]+$',
-                      }
-                  },
-                  }}
-                  data={payload.keystone.password}
+                  data={payload.keystone}
                   onChange={(meta) => this.handleChange('keystone', meta)}
                 />
 
-       
               </DetailsPanelBody>
             </DetailsPanel>
 
