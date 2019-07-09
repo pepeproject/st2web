@@ -35,26 +35,6 @@ const projectReducer = (state = {}, input) => {
   };
 
   switch (input.type) {
-    case 'FETCH_GROUPS': {
-      switch(input.status) {
-        case 'success':
-          projects = input.payload._embedded.project;
-          groups = makeGroups(projects, filter);
-          break;
-        case 'error':
-          break;
-        default:
-          break;
-      }
-
-      return {
-        ...state,
-        projects,
-        groups,
-        project,
-      };
-    }
-
     case 'FETCH_PROJECT': {
       switch(input.status) {
         case 'success':
@@ -162,11 +142,12 @@ const projectReducer = (state = {}, input) => {
 
     case 'SET_FILTER': {
       filter = input.filter;
-      groups = makeGroups(projects, filter);
+      projects = makeGroups(projects, filter);
 
       return {
         ...state,
         groups,
+        projects,
         filter,
       };
     }

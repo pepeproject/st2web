@@ -127,7 +127,7 @@ export default class ProjectPanel extends React.Component {
 
   get urlParams() {
     const {
-      ref = get('groups[0].project[0].id', this.props),
+      ref = get('projects[0].id', this.props),
       section = 'general',
     } = this.props.match.params;
 
