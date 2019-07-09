@@ -123,7 +123,7 @@ const projectReducer = (state = {}, input) => {
       const { id} = input;
       switch(input.status) {
         case 'success':
-          projects = [ ...projects ].filter(project => project.id != id);
+          projects = [ ...projects ].filter(project => parseInt(project.id) !== id);
           groups = makeGroups(projects, filter);
           break;
         case 'error':
