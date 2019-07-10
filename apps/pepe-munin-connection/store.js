@@ -86,7 +86,7 @@ const connectionReducer = (state = {}, input) => {
             required: true,
             enum: _.map(drivers, (driver) => ({
               value: `http://localhost/driver/${driver.id}`,
-              label: driver.name,
+              label: driver.alias,
             })),
           };
           break;
@@ -176,7 +176,7 @@ function makeGroups(connections, filter) {
   const groups = _(connections)
     .filter(({ name }) => name.toLowerCase().indexOf(filter.toLowerCase()) > -1)
     .sortBy('name')
-    .groupBy('driver.name')
+    .groupBy('driver.alias')
     .value()
   ;
 
