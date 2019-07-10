@@ -160,7 +160,7 @@ const metricReducer = (state = {}, input) => {
       switch(input.status) {
         case 'success':
           metrics = [ ...metrics ]
-              .filter(metric => parseInt(metric.id) !== id)
+            .filter(metric => parseInt(metric.id) !== id)
           ;
           groups = makeGroups(metrics, filter);
           break;

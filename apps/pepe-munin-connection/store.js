@@ -128,7 +128,7 @@ const connectionReducer = (state = {}, input) => {
       switch(input.status) {
         case 'success':
           connections = [ ...connections ]
-              .filter(connection => parseInt(connection.id) !== id)
+            .filter(connection => parseInt(connection.id) !== id)
           ;
           groups = makeGroups(connections, filter);
           break;

@@ -31,12 +31,7 @@ import {
 
 import Popup from '@stackstorm/module-popup';
 
-@connect(
-  ({
-
-  }) => ({
-
-  }),
+@connect(({}) => ({}),
   (dispatch, props) => ({
     onSubmit: (project) => dispatch({
       type: 'CREATE_PROJECT',

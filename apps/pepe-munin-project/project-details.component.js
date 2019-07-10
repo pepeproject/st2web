@@ -222,7 +222,7 @@ export default class ProjectDetails extends React.Component {
           subtitle={project.name}
         />
         <DetailsToolbar>
-          <Button flat red value="Delete" value="Delete" onClick={() => this.handleDelete()} />
+          <Button flat red value="Delete" onClick={() => this.handleDelete()} />
           <DetailsToolbarSeparator />
         </DetailsToolbar>
         <DetailsBody>
