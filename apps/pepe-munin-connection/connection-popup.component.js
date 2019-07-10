@@ -147,6 +147,22 @@ export default class ConnectionPopup extends React.Component {
                         type: 'string',
                         required: true,
                         pattern: '^[\\w.-]+$',
+                        position: 0,
+                      },
+                      url: {
+                        type: 'string',
+                        required: true,
+                        position: 1,
+                      },
+                      login: {
+                        type: 'string',
+                        required: true,
+                        position: 2,
+                      },
+                      password: {
+                        type: 'string',
+                        required: true,
+                        position: 3,
                       },
                     },
                   }}
