@@ -150,10 +150,17 @@ export default class MetricPopup extends React.Component {
                         type: 'string',
                         required: true,
                         pattern: '^[\\w.-]+$',
+                        position: 0,
                       },
                       query: {
                         type: 'string',
                         required: true,
+                        position: 1,
+                      },
+                      trigger: {
+                        type: 'string',
+                        required: true,
+                        position: 2,
                       },
                     },
                   }}
