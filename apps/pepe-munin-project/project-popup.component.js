@@ -41,13 +41,18 @@ import Popup from '@stackstorm/module-popup';
       }, project)
         .then((project) => {
           notification.success(`Project "${project.name}" has been created successfully.`);
-
-          props.onNavigate({
-            id: project.id,
-            section: 'general',
-          });
-
-          return project;
+          
+          return api.request({
+            method: 'get',
+            path: '/project/'.concat(project.id).concat("?projection=recursive"),
+          }, project)
+            .then((project) => {  
+              props.onNavigate({
+                id: project.id,
+                section: 'general',
+              });            
+              return project;
+            })
         })
         .catch((err) => {
           notification.error('Unable to create project.', { err });

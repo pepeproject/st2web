@@ -48,12 +48,17 @@ import Popup from '@stackstorm/module-popup';
       }, metric)
         .then((metric) => {
           notification.success(`Metric "${metric.name}" has been created successfully.`);
-
-          props.onNavigate({
-            id: metric.id,
-          });
-
-          return metric;
+          return api.request({
+            method: 'get',
+            path: '/metric/'.concat(metric.id).concat("?projection=recursive"),
+          }, metric)
+            .then((metric) => {  
+              props.onNavigate({
+                id: metric.id,
+                section: 'general',
+              });            
+              return metric;
+            })
         })
         .catch((err) => {
           notification.error('Unable to create metric.', { err });

@@ -48,12 +48,18 @@ import Popup from '@stackstorm/module-popup';
       }, connection)
         .then((connection) => {
           notification.success(`Connection "${connection.name}" has been created successfully.`);
+          return api.request({
+            method: 'get',
+            path: '/connection/'.concat(connection.id).concat("?projection=recursive"),
+          }, connection)
+            .then((connection) => {  
+              props.onNavigate({
+                id: connection.id,
+                section: 'general',
+              });            
+              return connection;
+            })
 
-          props.onNavigate({
-            id: connection.id,
-          });
-
-          return connection;
         })
         .catch((err) => {
           notification.error('Unable to create connection.', { err });
