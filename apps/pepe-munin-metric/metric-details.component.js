@@ -30,7 +30,7 @@ import {
   DetailsPanel,
   DetailsPanelBodyLine,
   DetailsToolbar,
-  DetailsToolbarSeparator, DetailsPanelBody,
+  DetailsToolbarSeparator, DetailsPanelBody, DetailsPanelHeading, DetailsFormLine,
 } from '@stackstorm/module-panel';
 
 @connect(({ metric }, props) => ({ metric }),
@@ -208,7 +208,6 @@ export default class MetricDetails extends React.Component {
           <DetailsToolbarSeparator />
         </DetailsToolbar>
         <DetailsBody>
-          <form>
             <DetailsPanel>
               <DetailsPanelBody>
                 <DetailsPanelBodyLine label="Name">
@@ -217,9 +216,27 @@ export default class MetricDetails extends React.Component {
                 <DetailsPanelBodyLine label="Query">
                   {metric.query}
                 </DetailsPanelBodyLine>
+                <DetailsPanelBodyLine label="Trigger">
+                  {metric.trigger}
+                </DetailsPanelBodyLine>
               </DetailsPanelBody>
             </DetailsPanel>
-          </form>
+          <DetailsPanel>
+            <DetailsPanelHeading title="Project" />
+            <DetailsPanelBody>
+              <Link to={`/project/${metric.project.id}`}>{metric.project.name}</Link>
+              <DetailsFormLine key="KeyStone Login" name="KeyStone Login" value={metric.project.keystone.login}/>
+            </DetailsPanelBody>
+          </DetailsPanel>
+          <DetailsPanel>
+            <DetailsPanelHeading title="Connection" />
+            <DetailsPanelBody>
+              <Link to={`/connection/${metric.connection.id}`}>{metric.connection.name}</Link>
+              <DetailsFormLine key="URL" name="URL" value={metric.connection.url}/>
+              <DetailsFormLine key="Login" name="Login" value={metric.connection.login}/>
+              <DetailsFormLine key="Driver" name="Driver" value={metric.connection.driver.alias}/>
+            </DetailsPanelBody>
+          </DetailsPanel>
         </DetailsBody>
       </PanelDetails>
     );
