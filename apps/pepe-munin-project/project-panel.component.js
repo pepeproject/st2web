@@ -146,7 +146,7 @@ export default class ProjectPanel extends React.Component {
   }
 
   render() {
-    const {groups, projects, filter, collapsed } = this.props;
+    const {groups, filter, collapsed } = this.props;
     const { id } = this.urlParams;
 
     setTitle([ 'Project' ]);

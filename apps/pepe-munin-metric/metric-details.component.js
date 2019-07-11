@@ -208,33 +208,33 @@ export default class MetricDetails extends React.Component {
           <DetailsToolbarSeparator />
         </DetailsToolbar>
         <DetailsBody>
-            <DetailsPanel>
-              <DetailsPanelBody>
-                <DetailsPanelBodyLine label="Name">
-                  {metric.name}
-                </DetailsPanelBodyLine>
-                <DetailsPanelBodyLine label="Query">
-                  {metric.query}
-                </DetailsPanelBodyLine>
-                <DetailsPanelBodyLine label="Trigger">
-                  {metric.trigger}
-                </DetailsPanelBodyLine>
-              </DetailsPanelBody>
-            </DetailsPanel>
+          <DetailsPanel>
+            <DetailsPanelBody>
+              <DetailsPanelBodyLine label="Name">
+                {metric.name}
+              </DetailsPanelBodyLine>
+              <DetailsPanelBodyLine label="Query">
+                {metric.query}
+              </DetailsPanelBodyLine>
+              <DetailsPanelBodyLine label="Trigger">
+                {metric.trigger}
+              </DetailsPanelBodyLine>
+            </DetailsPanelBody>
+          </DetailsPanel>
           <DetailsPanel>
             <DetailsPanelHeading title="Project" />
             <DetailsPanelBody>
               <Link to={`/project/${metric.project.id}`}>{metric.project.name}</Link>
-              <DetailsFormLine key="KeyStone Login" name="KeyStone Login" value={metric.project.keystone.login}/>
+              <DetailsFormLine key="KeyStone Login" name="KeyStone Login" value={metric.project.keystone.login} />
             </DetailsPanelBody>
           </DetailsPanel>
           <DetailsPanel>
             <DetailsPanelHeading title="Connection" />
             <DetailsPanelBody>
               <Link to={`/connection/${metric.connection.id}`}>{metric.connection.name}</Link>
-              <DetailsFormLine key="URL" name="URL" value={metric.connection.url}/>
-              <DetailsFormLine key="Login" name="Login" value={metric.connection.login}/>
-              <DetailsFormLine key="Driver" name="Driver" value={metric.connection.driver.alias}/>
+              <DetailsFormLine key="URL" name="URL" value={metric.connection.url} />
+              <DetailsFormLine key="Login" name="Login" value={metric.connection.login} />
+              <DetailsFormLine key="Driver" name="Driver" value={metric.connection.driver.alias} />
             </DetailsPanelBody>
           </DetailsPanel>
         </DetailsBody>

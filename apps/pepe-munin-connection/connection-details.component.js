@@ -185,10 +185,10 @@ export default class ConnectionDetails extends React.Component {
           <DetailsPanel>
             <DetailsPanelHeading title="Driver" />
             <DetailsPanelBody>
-              <DetailsFormLine name="Name" value={connection.driver.name}/>
-              <DetailsFormLine name="Alias" value={connection.driver.alias}/>
-              <DetailsFormLine name="JAR" value={connection.driver.jar}/>
-              <DetailsFormLine name="Type" value={connection.driver.type}/>
+              <DetailsFormLine name="Name" value={connection.driver.name} />
+              <DetailsFormLine name="Alias" value={connection.driver.alias} />
+              <DetailsFormLine name="JAR" value={connection.driver.jar} />
+              <DetailsFormLine name="Type" value={connection.driver.type} />
             </DetailsPanelBody>
           </DetailsPanel>
         </DetailsBody>
