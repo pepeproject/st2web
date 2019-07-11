@@ -30,7 +30,7 @@ import {
   DetailsPanel,
   DetailsPanelBodyLine,
   DetailsToolbar,
-  DetailsToolbarSeparator, DetailsPanelBody,
+  DetailsToolbarSeparator, DetailsPanelBody, DetailsPanelHeading, DetailsFormLine,
 } from '@stackstorm/module-panel';
 
 @connect(({ connection }, props) => ({ connection }),
@@ -169,15 +169,28 @@ export default class ConnectionDetails extends React.Component {
           <DetailsToolbarSeparator />
         </DetailsToolbar>
         <DetailsBody>
-          <form>
-            <DetailsPanel>
-              <DetailsPanelBody>
-                <DetailsPanelBodyLine label="Name">
-                  {connection.name}
-                </DetailsPanelBodyLine>
-              </DetailsPanelBody>
-            </DetailsPanel>
-          </form>
+          <DetailsPanel>
+            <DetailsPanelBody>
+              <DetailsPanelBodyLine label="Name">
+                {connection.name}
+              </DetailsPanelBodyLine>
+              <DetailsPanelBodyLine label="URL">
+                {connection.url}
+              </DetailsPanelBodyLine>
+              <DetailsPanelBodyLine label="Login">
+                {connection.login}
+              </DetailsPanelBodyLine>
+            </DetailsPanelBody>
+          </DetailsPanel>
+          <DetailsPanel>
+            <DetailsPanelHeading title="Driver" />
+            <DetailsPanelBody>
+              <DetailsFormLine name="Name" value={connection.driver.name}/>
+              <DetailsFormLine name="Alias" value={connection.driver.alias}/>
+              <DetailsFormLine name="JAR" value={connection.driver.jar}/>
+              <DetailsFormLine name="Type" value={connection.driver.type}/>
+            </DetailsPanelBody>
+          </DetailsPanel>
         </DetailsBody>
       </PanelDetails>
     );
